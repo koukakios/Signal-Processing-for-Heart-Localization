@@ -3,29 +3,40 @@ from scipy import signal
 from scipy.fft import fft
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.io import wavfile
 from lib.plot.timeFrequencyPlot import *
 from lib.plot.frequencyUtils import getDamping
 from lib.general.generalUtils import todB
+from functions import construct_filter
 
-def construct_filter(low: float, high: float, Fs: int, order: int = 2):
-    b, a = signal.butter(order, [2*low/Fs, 2*high/Fs], btype="band")
-    g = signal.filtfilt(b, a, [*np.zeros(10000), 1, *np.zeros(10000)])
-    return g
+def filter(x: list|np.ndarray, g: list|np.ndarray):
+    return np.convolve(x, g)
 
-def filter(b, a, data):
-    return signal.filtfilt(b, a, data)
-
-def main():
-    Fs = 48e3
-    g = construct_filter(10, 800, Fs)
-
-    freq, damping = np.abs(getDamping(g, 2000, Fs, 1000000))
-    print(f"Damping at {freq:.1f} Hz is {todB(damping):.2f} dB")
+def downsample(x, Fs_original):
+    M = Fs_original / Fs
     
-    fig, ax = plt.subplots(1, 2, figsize=(8,4), constrained_layout=True)
-    timeFrequencyPlot(g, Fs, ax[0], ax[1], samples_offset = -len(g)/2, apply_fftshift=True, resolution=None)
-    fig.suptitle("Non-causal butterworth bandpass filter $g(t)$")
-    plt.show()
+    if int(M) != M:
+        print(f"ERROR: M is not an integer: {Fs_original}/{Fs}={M:.5f}")
+        raise ValueError(f"ERROR: M is not an integer: {Fs_original}/{Fs}={M:.5f}")
+    
+    M = int(M)
+    x_downsampled = x[::M]
+    
+    return x_downsampled
+
+def preprocess():
+    Fs_original, x = wavfile.read(".\\samples\\stethoscope_5_realHeart_\\recording_2025-07-10_14-40-12_channel_1.wav")
+    
+    g = construct_filter(LP_low_freq, LP_high_freq, Fs_original, order=LP_filter_order)
+    
+    y = filter(x, g)
+    
+    y_downsampled = downsample(x, Fs_original)
+
+    
+def main():
+    preprocess()
+    
 
 if __name__ == "__main__":
     main()

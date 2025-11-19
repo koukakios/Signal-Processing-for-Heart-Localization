@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import axes
 from scipy.fft import fft, fftshift
 import numpy as np
+from lib.general.generalUtils import todB
 
 def timeFrequencyPlot(x: list|np.ndarray, Fs: int, time_ax: axes.Axes, freq_ax: axes.Axes, time_title:str=None, freq_title:str=None, grid: bool = True, samples_offset: float = 0, apply_fftshift:bool=False, resolution: int|None = None):
     if resolution is not None:
@@ -21,9 +22,9 @@ def timeFrequencyPlot(x: list|np.ndarray, Fs: int, time_ax: axes.Axes, freq_ax: 
     time_ax.set_xlabel("Time [s]")
     time_ax.set_ylabel("Amplitude")
     
-    freq_ax.plot(f, np.abs(X))
+    freq_ax.plot(f, todB(np.abs(X)))
     freq_ax.set_xlabel("Frequency [Hz]")
-    freq_ax.set_ylabel("Amplitude")
+    freq_ax.set_ylabel("Amplitude(dB)")
     
     time_ax.grid(grid)
     freq_ax.grid(grid)
