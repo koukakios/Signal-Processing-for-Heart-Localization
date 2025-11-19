@@ -56,7 +56,6 @@ def main(pcg_dir: str = "./samples/chapter_2/", csv_data_file: str = None):
             return -1
         elif len(csv_files) == 1:
             csv_data_file = join(pcg_dir, csv_files[0])
-            print(f"using {csv_files}")
         else:
             print("WARNING: no csv datafile found. Not using any info from the datafile.")
     else:

@@ -1,3 +1,5 @@
+from config import *
+
 def main():
     print("hello world")
 
