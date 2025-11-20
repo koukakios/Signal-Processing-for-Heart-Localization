@@ -5,6 +5,20 @@ import numpy as np
 from lib.general.generalUtils import todB
 
 def timeFrequencyPlot(x: list|np.ndarray, Fs: int, time_ax: axes.Axes, freq_ax: axes.Axes, time_title:str=None, freq_title:str=None, grid: bool = True, samples_offset: float = 0, apply_fftshift:bool=False, resolution: int|None = None):
+    """Plots the time and frequency spectrum of an input signal x.
+
+    Args:
+        x (list | np.ndarray): The input signal.
+        Fs (int): The original sampling rate.
+        time_ax (axes.Axes): The matplotlib.axes.Axes object to plot the time spectrum on.
+        freq_ax (axes.Axes): The matplotlib.axes.Axes object to plot the frequency spectrum on.
+        time_title (str, optional): The title of the time spectrum plot. Defaults to None.
+        freq_title (str, optional): The title of the frequency spectrum plot. Defaults to None.
+        grid (bool, optional): Whether to show a grid in the plots. Defaults to True.
+        samples_offset (float, optional): How many samples the time input array begins at.. Defaults to 0.
+        apply_fftshift (bool, optional): Whether to apply an fftshift, so plot from -Fs/2 to Fs/2. Defaults to False.
+        resolution (int | None, optional): The resolution of the fft. If None, the result will be as long as the input signal. Defaults to None.
+    """
     if resolution is not None:
         X = fft(x, resolution)
     else:
