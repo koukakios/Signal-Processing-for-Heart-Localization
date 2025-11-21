@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 # array response, depends on angle of arrival
 def a_lin(theta, M, d, v, f0):
     """Returns the *array response* or *steering vector* for a Uniform Linear Microphone Array
@@ -24,11 +24,26 @@ def test_a_lin():
     M = 10
     d = 1
     v = 343
-    f0 = 250
+    f0 = 500
 
     array_response_vector = a_lin(theta, M, d, v, f0)
     
     print (abs(array_response_vector))
+
+def spatial_spectrum():
+    
+    M = 7
+    d = 5
+    v = 343
+    f0 = 250
+    
+    power_out = np.array([ np.square (  np.dot(a_lin(theta, M, d, v, f0).conj().T,
+                          a_lin(theta, M, d, v, f0))   ) for theta in range (-90,90,1)  ]   )
+    
+    x = np.arange(len(power_out))
+    y = power_out
+    plt.plot(x,y)
+    plt.show()
 
 if __name__ == "__main__":
     pass
