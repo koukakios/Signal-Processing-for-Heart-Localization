@@ -13,6 +13,7 @@ def a_lin(theta, M, d, v, f0):
     Returns:
         np.ndarray: The array response
     """  
+    """okay"""
     result = np.array([ np.exp(np.imag(-j*mic*(d/v)*np.sin(theta)*2*np.pi*f0)) for mic in range (M)])
 
     return result
