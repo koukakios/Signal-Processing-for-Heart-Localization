@@ -1,4 +1,5 @@
 from lib.processing.functions import *
+from lib.processing.dataprocessing import *
 from lib.config.ConfigParser import ConfigParser
 from scipy.io import wavfile
 
@@ -27,6 +28,8 @@ class Processor:
         self.energy_filter_order = config.Energy.FilterOrder
         self.energy_cutoff_freq = config.Energy.CutoffFrequency
         self.energy_filter_size = config.Energy.Size
+        self.segmentation_min_height = config.Segmentation.MinHeight
+        self.segmentation_min_dist = config.Segmentation.MinDist * self.Fs_target
         
         self.save_results = save_results
         # Initialize fields that values can be saved to
@@ -39,6 +42,10 @@ class Processor:
         self.y_energy = None
         self.see_filter = None
         self.see = None
+        self.see_normalized = None
+        self.peaks = None
+        self.peak_properties = None
+        self.peaks_dist = None
     def process(self):
         """Initialize the processing and optionally save the steps in between.
         """
@@ -58,6 +65,13 @@ class Processor:
         
         see = filter(y_energy, see_filter)
         
+        see_normalized = normalize(see, mode="stdev")
+        
+        peaks, peak_properties = get_peaks(see_normalized, self.segmentation_min_height, self.segmentation_min_dist)
+        
+        peaks_dist = get_dist_peaks_to_next(peaks)
+        
+        
         if self.save_results:
             self.Fs_original = Fs_original
             self.x = x
@@ -68,3 +82,7 @@ class Processor:
             self.y_energy = y_energy
             self.see_filter = see_filter
             self.see = see
+            self.see_normalized = see_normalized
+            self.peaks = peaks
+            self.peak_properties = peak_properties
+            self.peaks_dist = peaks_dist

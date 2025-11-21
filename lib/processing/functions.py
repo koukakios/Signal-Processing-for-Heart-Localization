@@ -76,16 +76,23 @@ def downsample(x: list|np.ndarray, Fs_original:int, Fs_target: int):
     
     return x_downsampled
 
-def normalize(x: np.ndarray):
+def normalize(x: np.ndarray, mode: str="max"):
     """Returns the normalized input signal.
 
     Args:
         x (np.ndarray): The input signal.
+        mode (str, optional): The mode of how to normalize. Values: `max`, `stdev`. Default is `max`.
 
     Returns:
         np.ndarray: The normalized input signal.
     """
-    return x / np.max(np.abs(x))
+    match mode:
+        case "max":
+            return x / np.max(np.abs(x))
+        case "stdev":
+            return x / np.std(x, ddof=1)
+        case _:
+            raise ValueError(f"{mode} is not supported")
 
 def shannon_energy(x: np.ndarray):
     """Returns the Shannon energy of a normalized signal

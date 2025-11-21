@@ -23,7 +23,7 @@ def assignment441(config):
     ax[1].set_xlabel("Time[s]")
     ax[1].set_ylabel("Amplitude")
     
-    ax[1].sharex(ax[0])
+    
     plt.show()
 
 

@@ -104,7 +104,7 @@ def main():
     """The main loop. Can be changed to choose whether to run assignment 4.2.2 or 4.2.3.
     """
     config = ConfigParser()
-    result45(config)
+    filter45(config)
 
 if __name__ == "__main__":
     main()

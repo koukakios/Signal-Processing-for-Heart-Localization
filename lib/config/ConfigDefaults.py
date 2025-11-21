@@ -14,7 +14,7 @@ DEFAULT_CONFIG = {
     },
     "Energy":{
         "FilterOrder": 2,
-        "CutoffFrequency": 20,
+        "CutoffFrequency": 10,
         "Size": 1000
     }
 }
