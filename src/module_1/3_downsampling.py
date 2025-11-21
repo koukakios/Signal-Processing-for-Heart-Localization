@@ -37,12 +37,13 @@ def assignment432(config: ConfigParser):
         processor.Fs_target, 
         ax[1][0], 
         ax[1][1], 
-        samples_offset = -len(processor.g)/2, 
+        samples_offset = 0,
         apply_fftshift=True, 
         time_title="Time domain of processed recording", 
         freq_title="Frequency domain of processed recording"
     )
     ax[0][0].sharex(ax[1][0])
+    ax[0][0].sharey(ax[1][0])
     
     plt.show()
 

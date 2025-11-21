@@ -8,8 +8,8 @@
 
 ## Assignments 4.3
 
-1. In the end, we used a 3rd order Butterworth filter of length 5001.
-2. TODO
+1. In the end, we used a 2nd order Butterworth filter of length 5001.
+2. The signal quality is pretty good. The band should be reduced to reduce the noise level, because less bandwidth gives less noise power.
 
 ## Assignments 4.4
 
