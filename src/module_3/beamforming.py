@@ -15,7 +15,7 @@ def a_lin(theta, M, d, v, f0):
         np.ndarray: The array response
     """  
     """okay"""
-    result = np.array([ np.exp(np.imag(0 -1*mic*(d/v)*np.sin(theta)*2*np.pi*f0 *1j)) for mic in range (M)])
+    result = np.array([ np.exp((0 -1*mic*(d/v)*np.sin(theta*np.pi/180)*2*np.pi*f0 *1j)) for mic in range (M)])
 
     return result
 
@@ -33,7 +33,7 @@ def test_a_lin():
 def spatial_spectrum(theta0):
     
     M = 7
-    d = 2
+    d = 1/2
     v = 343
     f0 = 500
     
@@ -46,4 +46,4 @@ def spatial_spectrum(theta0):
     plt.show()
 
 if __name__ == "__main__":
-    spatial_spectrum(30)
+    spatial_spectrum(15)
