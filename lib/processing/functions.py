@@ -39,7 +39,7 @@ def construct_lowpass_filter(fc: float, Fs: int, order: int = 2, size: int = 200
     g = signal.filtfilt(b, a, [*np.zeros(resolution), 1, *np.zeros(resolution)])
     return g
 
-def filter(x: list|np.ndarray, g: list|np.ndarray):
+def apply_filter(x: list|np.ndarray, g: list|np.ndarray):
     """Filter x through g by convolution.
 
     Args:

@@ -67,7 +67,7 @@ class Processor:
         g = construct_bandpass_filter(self.lp_low_freq, self.lp_high_freq, Fs_original, order=self.lp_filter_order, size=self.lp_filter_size)
         
         self.log("Filtering input signal...")
-        y = filter(x, g)
+        y = apply_filter(x, g)
         
         self.log("Downsampling signal...")
         y_downsampled = downsample(y, Fs_original, self.Fs_target)
@@ -82,7 +82,7 @@ class Processor:
         see_filter =  construct_lowpass_filter(self.energy_cutoff_freq, self.Fs_target, self.energy_filter_order, self.energy_filter_size)
         
         self.log("Creating Shannon Energy Envelope...")
-        see = filter(y_energy, see_filter)
+        see = apply_filter(y_energy, see_filter)
         
         self.log("Normalizing Shannon Energy Envelope...")
         see_normalized = normalize(see, mode="stdev")
