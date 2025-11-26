@@ -56,6 +56,7 @@ class Processor:
         self.s2_peaks = None
         self.s1_outliers = None
         self.s2_outliers = None
+        self.y_line = None
     def process(self):
         """Initialize the processing and optionally save the steps in between.
         """
@@ -93,10 +94,12 @@ class Processor:
         peaks_dist = get_dist_peaks_to_next(peaks)
         
         self.log("Classifying peaks...")
-        s1_peaks, s2_peaks, s1_outliers, s2_outliers = classify_peaks(peaks)
+        # s1_peaks, s2_peaks, s1_outliers, s2_outliers = self.classify_peaks(peaks)
+        s1_peaks, s2_peaks = self.classify_peaks(peaks)
         
         self.log("Finished! :-)")
-        self.log(f"Results:\n  - S1 count: {len(s1_peaks)}\n  - S2 count: {len(s2_peaks)}\n  - S1 outliers count: {len(s1_outliers)}\n  - S2 outliers count: {len(s2_outliers)}")
+        # self.log(f"Results:\n  - S1 count: {len(s1_peaks)}\n  - S2 count: {len(s2_peaks)}\n  - S1 outliers count: {len(s1_outliers)}\n  - S2 outliers count: {len(s2_outliers)}")
+        self.log(f"Results:\n  - S1 count: {len(s1_peaks)}\n  - S2 count: {len(s2_peaks)}")
         
         if self.save_results:
             self.Fs_original = Fs_original
@@ -114,8 +117,74 @@ class Processor:
             self.peaks_dist = peaks_dist
             self.s1_peaks = s1_peaks
             self.s2_peaks = s2_peaks
-            self.s1_outliers = s1_outliers
-            self.s2_outliers = s2_outliers
+            self.s1_outliers = None
+            self.s2_outliers = None
+            
+    def classify_peaks(self, x_peaks: np.ndarray):
+        diff = np.diff(x_peaks)
+        diff2 = np.diff(diff)
+        
+        peaks = np.array(list(zip(x_peaks[:-2], diff[:-1], diff2)))
+        
+        self.detected_peaks = peaks
+        
+        # s2_peaks, s2_outliers, s1_peaks, s1_outliers = analyze_diff2(x_peaks, diff, diff2)
+        s1_peaks, s2_peaks = self.analyze_diff2(peaks)
+        
+        return s1_peaks, s2_peaks
+    
+    def analyze_diff2(self, peaks):
+        minima = []
+        maxima = []
+        uncertain = []
+        prev_d = None
+        # Get temporary mimima and maxima on difference plot
+        for x, d, d2 in peaks:
+            to_add = (x,d,d2)
+            if prev_d is not None and d > prev_d and d2 < 0:
+                maxima.append(to_add)
+            elif prev_d is not None and d < prev_d and d2 > 0:
+                minima.append(to_add)
+            else:
+                uncertain.append(to_add)
+            prev_d = d
+                
+        minima = np.array(minima)
+        maxima = np.array(maxima)
+        
+        # Sort minima descending
+        minima = minima[minima[:,1].argsort()[::-1]]
+        # Sort maxima ascending
+        maxima = maxima[maxima[:,1].argsort()]
+        
+        y_line = None
+        # Get line that goes through most lines in the difference plot
+        while True:
+            cur_min, minima = pop_np(minima)
+            cur_max, maxima = pop_np(maxima)
+            if cur_min[1] < cur_max[1]:
+                y_line = 0.5 * (max(minima[:,1]) + min(maxima[:,1]))
+            
+            if y_line != None:
+                break
+            elif len(minima) == 0 or len(maxima) == 0:
+                raise RuntimeError("No line found")
+            
+        # New function: classify based on y_line
+        s1 = []
+        s2 = []
+        for x, d, d2 in peaks:
+            to_add = (x,d,d2)
+            if d <= y_line:
+                s1.append(to_add)
+            else:
+                s2.append(to_add)
+            
+        if self.save_results:
+            self.y_line = y_line
+
+        return np.array(s1), np.array(s2)
+    
     def log(self, msg):
         if self.log_enabled:
             print(msg)

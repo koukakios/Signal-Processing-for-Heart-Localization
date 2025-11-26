@@ -27,7 +27,7 @@ def remove_outliers(x: list[tuple[int, int]]):
     upper_bound = Q3 + 1.5 * IQR
     
     outliers = x[(dist < lower_bound) | (dist > upper_bound)]
-    data = x[(dist > lower_bound) & (dist < upper_bound)]
+    data = x[(dist >= lower_bound) & (dist <= upper_bound)]
     
     return data, outliers
 
@@ -55,9 +55,13 @@ def analyze_diff2(x_peaks: np.ndarray, diff: np.ndarray, diff2: np.ndarray):
     return maxima, max_outliers, minima, min_outliers
 
 def classify_peaks(x_peaks: np.ndarray):
+    raise NotImplementedError()
     diff = np.diff(x_peaks)
     diff2 = np.diff(diff)
     
     s2_peaks, s2_outliers, s1_peaks, s1_outliers = analyze_diff2(x_peaks, diff, diff2)
     
     return np.array(s1_peaks), np.array(s2_peaks), np.array(s1_outliers), np.array(s2_outliers)
+
+def pop_np(x):
+    return x[-1], x[:-1]

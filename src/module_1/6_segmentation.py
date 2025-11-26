@@ -45,20 +45,24 @@ def segmentation(config):
     ax[0][1].sharex(ax[1][1])
     ax[2][0].sharex(ax[1][0])
     
-    """
-    ax[1][0].scatter(processor.s1_peaks / processor.Fs_target, processor.see_normalized[processor.s1_peaks], c="red", marker="^", label="S1")
-    ax[1][0].scatter(processor.s2_peaks / processor.Fs_target, processor.see_normalized[processor.s2_peaks], c="green", marker="^", label="S2")
-    if processor.s1_outliers.size > 0:
-        ax[1][0].scatter(processor.s1_outliers / processor.Fs_target, processor.see_normalized[processor.s1_outliers], c="purple", marker="^", label="uncertain")
-    if processor.s2_outliers.size > 0:
-        ax[1][0].scatter(processor.s2_outliers / processor.Fs_target, processor.see_normalized[processor.s2_outliers], c="purple", marker="^", label="uncertain")
-    ax[1][0].legend()"""
     
-    ax[2][0].plot(np.array(list(processor.peaks_dist.keys())) / processor.Fs_target, processor.peaks_dist.values(), label="all")
+    ax[1][0].scatter(processor.s1_peaks[:,0] / processor.Fs_target, processor.see_normalized[processor.s1_peaks[:,0]], c="red", marker="^", label="S1")
+    ax[1][0].scatter(processor.s2_peaks[:,0] / processor.Fs_target, processor.see_normalized[processor.s2_peaks[:,0]], c="green", marker="^", label="S2")
+    ax[1][0].axhline(y=processor.segmentation_min_height, label="Cutoff")
+    # if processor.s1_outliers.size > 0:
+    #     ax[1][0].scatter(processor.s1_outliers[:,0] / processor.Fs_target, processor.see_normalized[processor.s1_outliers[:,0]], c="purple", marker="^", label="uncertain")
+    # if processor.s2_outliers.size > 0:
+    #     ax[1][0].scatter(processor.s2_outliers[:,0] / processor.Fs_target, processor.see_normalized[processor.s2_outliers[:,0]], c="purple", marker="^", label="uncertain")
+    ax[1][0].legend()
+    print(len(processor.peaks_dist))
+    # ax[2][0].plot(np.array(list(processor.peaks_dist.keys())) / processor.Fs_target, processor.peaks_dist.values(), label="all", marker=".")
+    ax[2][0].plot(processor.detected_peaks[:,0] / processor.Fs_target, processor.detected_peaks[:,1], label="all", marker=".")
     ax[2][0].plot(processor.s1_peaks[:,0] / processor.Fs_target, processor.s1_peaks[:,1], label="s1_peaks")
+    ax[2][0].axhline(y=processor.y_line, label="Threshold", color="black")
     ax[2][0].plot(processor.s2_peaks[:,0] / processor.Fs_target, processor.s2_peaks[:,1], label="s2_peaks")
-    ax[2][0].scatter(processor.s1_outliers[:,0] / processor.Fs_target, processor.s1_outliers[:,1], label="s1_outliers")
-    ax[2][0].scatter(processor.s2_outliers[:,0] / processor.Fs_target, processor.s2_outliers[:,1], label="s2_outliers")
+    # ax[2][0].scatter(processor.s1_outliers[:,0] / processor.Fs_target, processor.s1_outliers[:,1], label="s1_outliers", color="red")
+    # ax[2][0].scatter(processor.s2_outliers[:,0] / processor.Fs_target, processor.s2_outliers[:,1], label="s2_outliers", color="orange")
+    ax[2][0].grid()
     ax[2][0].legend()
     
     
