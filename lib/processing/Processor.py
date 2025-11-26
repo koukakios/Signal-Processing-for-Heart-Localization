@@ -169,6 +169,8 @@ class Processor:
                 break
             elif len(minima) == 0 or len(maxima) == 0:
                 raise RuntimeError("No line found")
+            else:
+                print("Skipped some peaks, invalid line through middle")
             
         # New function: classify based on y_line
         s1 = []
