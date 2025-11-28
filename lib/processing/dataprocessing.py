@@ -65,3 +65,22 @@ def classify_peaks(x_peaks: np.ndarray):
 
 def pop_np(x):
     return x[-1], x[:-1]
+
+def detect_peak_domains(peaks: np.ndarray, see: np.ndarray, threshold: float):
+    peak_start = None
+    peaks_ind = []
+    for i, s in enumerate(see):
+        if s >= threshold and peak_start is None:
+            peak_start = i
+        elif s <= threshold and peak_start is not None:
+            if np.any((peaks[:,0] >= peak_start) & (peaks[:,0] <= i)):
+                peaks_ind.append((peak_start, i))
+            peak_start = None
+    return np.array(peaks_ind)
+
+def segment(signal: np.ndarray, domains: np.ndarray, len_filter: int):
+    mask = np.zeros(len(signal), dtype=bool)
+    comp = int(len_filter / 2)
+    for start, end in domains:
+        mask[start - comp:end - comp] = True
+    return np.where(mask, signal, 0)

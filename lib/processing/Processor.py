@@ -3,13 +3,15 @@ from lib.processing.dataprocessing import *
 from lib.config.ConfigParser import ConfigParser
 from scipy.io import wavfile
 from pathlib import Path
+from scipy.io.wavfile import write
+from os.path import join, basename, splitext
 
 class Processor:
     """Wrapper for the processing stage.
     
     This class allows to easily reuse code across the whole codebase and optionally save results for plotting them.
     """
-    def __init__(self, file_path: str, config: ConfigParser, save_results: bool = False, log: bool=True):
+    def __init__(self, file_path: str, config: ConfigParser, save_results: bool = False, log: bool=True, write_result: bool = True):
         """Initializes the processor.
 
         Args:
@@ -35,8 +37,11 @@ class Processor:
         self.energy_filter_size = config.Energy.Size
         self.segmentation_min_height = config.Segmentation.MinHeight
         self.segmentation_min_dist = config.Segmentation.MinDist * self.Fs_target
+        self.segmentation_threshold = config.Segmentation.EnvelopeThreshold
+        self.generation_path = config.Segmentation.OutputPath
         
         self.save_results = save_results
+        self.write_result = write_result
         self.log_enabled = log
         # Initialize fields that values can be saved to
         self.Fs_original = None
@@ -58,6 +63,10 @@ class Processor:
         self.s2_outliers = None
         self.y_line = None
         self.uncertain = None
+        self.ind_s1 = None
+        self.ind_s2 = None
+        self.segmented_s1 = None
+        self.segmented_s2 = None
     def process(self):
         """Initialize the processing and optionally save the steps in between.
         """
@@ -80,7 +89,7 @@ class Processor:
         y_energy = shannon_energy(y_normalized)
         
         self.log("Constructing Shannon Energy Envelope Filter...")
-        see_filter =  construct_lowpass_filter(self.energy_cutoff_freq, self.Fs_target, self.energy_filter_order, self.energy_filter_size)
+        see_filter = construct_lowpass_filter(self.energy_cutoff_freq, self.Fs_target, self.energy_filter_order, self.energy_filter_size)
         
         self.log("Creating Shannon Energy Envelope...")
         see = apply_filter(y_energy, see_filter)
@@ -97,6 +106,20 @@ class Processor:
         self.log("Classifying peaks...")
         # s1_peaks, s2_peaks, s1_outliers, s2_outliers = self.classify_peaks(peaks)
         s1_peaks, s2_peaks, uncertain = self.classify_peaks(peaks)
+        
+        self.log("Segmenting them...")
+        ind_s1 = detect_peak_domains(s1_peaks, see_normalized, self.segmentation_threshold)
+        ind_s2 = detect_peak_domains(s2_peaks, see_normalized, self.segmentation_threshold)
+        
+        segmented_s1 = segment(y_normalized, ind_s1, len(see_filter))
+        segmented_s2 = segment(y_normalized, ind_s2, len(see_filter))
+        
+        if self.write_result:
+            self.log("Writing files...")
+            file_name = splitext(basename(self.file_path))[0]
+            write(join(self.generation_path, f"segmented-s1-{file_name}.wav"), self.Fs_target, segmented_s1)
+            write(join(self.generation_path, f"segmented-s2-{file_name}.wav"), self.Fs_target, segmented_s2)
+
         
         self.log("Finished! :-)")
         # self.log(f"Results:\n  - S1 count: {len(s1_peaks)}\n  - S2 count: {len(s2_peaks)}\n  - S1 outliers count: {len(s1_outliers)}\n  - S2 outliers count: {len(s2_outliers)}")
@@ -121,6 +144,10 @@ class Processor:
             self.uncertain = uncertain
             self.s1_outliers = None
             self.s2_outliers = None
+            self.ind_s1 = ind_s1
+            self.ind_s2 = ind_s2
+            self.segmented_s1 = segmented_s1
+            self.segmented_s2 = segmented_s2
             
     def classify_peaks(self, x_peaks: np.ndarray):
         diff = np.diff(x_peaks)
@@ -194,6 +221,9 @@ class Processor:
             self.y_line = y_line
 
         return np.array(s1), np.array(s2), np.array(uncertain)
+    
+
+        
     
     def log(self, msg):
         if self.log_enabled:

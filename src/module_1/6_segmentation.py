@@ -48,7 +48,12 @@ def segmentation(config):
     
     ax[1][0].scatter(processor.s1_peaks[:,0] / processor.Fs_target, processor.see_normalized[processor.s1_peaks[:,0]], c="red", marker="^", label="S1")
     ax[1][0].scatter(processor.s2_peaks[:,0] / processor.Fs_target, processor.see_normalized[processor.s2_peaks[:,0]], c="green", marker="^", label="S2")
+    ax[1][0].scatter(processor.ind_s1[:,0] / processor.Fs_target, processor.see_normalized[processor.ind_s1[:,0]], c="orange", marker="v", label="S1 ind")
+    ax[1][0].scatter(processor.ind_s1[:,1] / processor.Fs_target, processor.see_normalized[processor.ind_s1[:,1]], c="orange", marker="v")
+    ax[1][0].scatter(processor.ind_s2[:,0] / processor.Fs_target, processor.see_normalized[processor.ind_s2[:,0]], c="darkgrey", marker="v", label="S2 ind")
+    ax[1][0].scatter(processor.ind_s2[:,1] / processor.Fs_target, processor.see_normalized[processor.ind_s2[:,1]], c="darkgrey", marker="v")
     ax[1][0].axhline(y=processor.segmentation_min_height, label="Cutoff")
+    ax[1][0].axhline(y=processor.segmentation_threshold, label="Threshold", color="green")
     if processor.uncertain.size > 0:
         ax[1][0].scatter(processor.uncertain[:,0] / processor.Fs_target, processor.see_normalized[processor.uncertain[:,0]], c="purple", marker="^", label="uncertain")
     # if processor.s1_outliers.size > 0:
@@ -69,6 +74,13 @@ def segmentation(config):
     ax[2][0].grid()
     ax[2][0].legend()
     
+    t = np.linspace(0, len(processor.segmented_s1)/processor.Fs_target, len(processor.segmented_s1))
+    
+    ax[2][1].plot(t, processor.y_normalized, label="Start signal")
+    ax[2][1].plot(t, processor.segmented_s1, label="segmented_s1")
+    ax[2][1].plot(t, processor.segmented_s2, label="segmented_s2")
+    ax[2][1].grid()
+    ax[2][1].legend()
     
     plt.show()
 
