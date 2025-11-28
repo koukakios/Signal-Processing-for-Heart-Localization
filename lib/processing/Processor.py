@@ -57,6 +57,7 @@ class Processor:
         self.s1_outliers = None
         self.s2_outliers = None
         self.y_line = None
+        self.uncertain = None
     def process(self):
         """Initialize the processing and optionally save the steps in between.
         """
@@ -95,11 +96,11 @@ class Processor:
         
         self.log("Classifying peaks...")
         # s1_peaks, s2_peaks, s1_outliers, s2_outliers = self.classify_peaks(peaks)
-        s1_peaks, s2_peaks = self.classify_peaks(peaks)
+        s1_peaks, s2_peaks, uncertain = self.classify_peaks(peaks)
         
         self.log("Finished! :-)")
         # self.log(f"Results:\n  - S1 count: {len(s1_peaks)}\n  - S2 count: {len(s2_peaks)}\n  - S1 outliers count: {len(s1_outliers)}\n  - S2 outliers count: {len(s2_outliers)}")
-        self.log(f"Results:\n  - S1 count: {len(s1_peaks)}\n  - S2 count: {len(s2_peaks)}")
+        self.log(f"Results:\n  - S1 count: {len(s1_peaks)}\n  - S2 count: {len(s2_peaks)}\n  - Uncertain: {len(uncertain)}")
         
         if self.save_results:
             self.Fs_original = Fs_original
@@ -117,6 +118,7 @@ class Processor:
             self.peaks_dist = peaks_dist
             self.s1_peaks = s1_peaks
             self.s2_peaks = s2_peaks
+            self.uncertain = uncertain
             self.s1_outliers = None
             self.s2_outliers = None
             
@@ -129,9 +131,9 @@ class Processor:
         self.detected_peaks = peaks
         
         # s2_peaks, s2_outliers, s1_peaks, s1_outliers = analyze_diff2(x_peaks, diff, diff2)
-        s1_peaks, s2_peaks = self.analyze_diff2(peaks)
+        s1_peaks, s2_peaks, uncertain = self.analyze_diff2(peaks)
         
-        return s1_peaks, s2_peaks
+        return s1_peaks, s2_peaks, uncertain
     
     def analyze_diff2(self, peaks):
         minima = []
@@ -175,17 +177,23 @@ class Processor:
         # New function: classify based on y_line
         s1 = []
         s2 = []
+        uncertain = []
+        prev_s1 = None
         for x, d, d2 in peaks:
             to_add = (x,d,d2)
-            if d <= y_line:
+            if d <= y_line and not prev_s1:
                 s1.append(to_add)
-            else:
+                prev_s1 = True
+            elif d > y_line and (prev_s1 or prev_s1 is None):
                 s2.append(to_add)
+                prev_s1 = False
+            else:
+                uncertain.append(to_add)
             
         if self.save_results:
             self.y_line = y_line
 
-        return np.array(s1), np.array(s2)
+        return np.array(s1), np.array(s2), np.array(uncertain)
     
     def log(self, msg):
         if self.log_enabled:

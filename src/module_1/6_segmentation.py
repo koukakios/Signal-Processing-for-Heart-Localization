@@ -49,6 +49,8 @@ def segmentation(config):
     ax[1][0].scatter(processor.s1_peaks[:,0] / processor.Fs_target, processor.see_normalized[processor.s1_peaks[:,0]], c="red", marker="^", label="S1")
     ax[1][0].scatter(processor.s2_peaks[:,0] / processor.Fs_target, processor.see_normalized[processor.s2_peaks[:,0]], c="green", marker="^", label="S2")
     ax[1][0].axhline(y=processor.segmentation_min_height, label="Cutoff")
+    if processor.uncertain.size > 0:
+        ax[1][0].scatter(processor.uncertain[:,0] / processor.Fs_target, processor.see_normalized[processor.uncertain[:,0]], c="purple", marker="^", label="uncertain")
     # if processor.s1_outliers.size > 0:
     #     ax[1][0].scatter(processor.s1_outliers[:,0] / processor.Fs_target, processor.see_normalized[processor.s1_outliers[:,0]], c="purple", marker="^", label="uncertain")
     # if processor.s2_outliers.size > 0:
@@ -62,6 +64,8 @@ def segmentation(config):
     ax[2][0].plot(processor.s2_peaks[:,0] / processor.Fs_target, processor.s2_peaks[:,1], label="s2_peaks")
     # ax[2][0].scatter(processor.s1_outliers[:,0] / processor.Fs_target, processor.s1_outliers[:,1], label="s1_outliers", color="red")
     # ax[2][0].scatter(processor.s2_outliers[:,0] / processor.Fs_target, processor.s2_outliers[:,1], label="s2_outliers", color="orange")
+    if processor.uncertain.size > 0:
+        ax[2][0].scatter(processor.uncertain[:,0] / processor.Fs_target, processor.uncertain[:,1], label="uncertain", color="red")
     ax[2][0].grid()
     ax[2][0].legend()
     
