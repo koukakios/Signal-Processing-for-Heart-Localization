@@ -3,7 +3,6 @@ from beamforming import a_lin
 from beamforming import test_a_lin
 from beamforming import spatial_spectrum
 def main():
-    spatial_spectrum()
     pass
 
 if __name__ == "__main__":
