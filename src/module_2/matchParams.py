@@ -8,8 +8,14 @@ from lib.processing.functions import construct_bandpass_filter, apply_filter
 from os.path import join
 from scipy.io.wavfile import write
 from src.module_2.generate import *
+import matplotlib as mpl
+from matplotlib.widgets import Button, Slider, TextBox
+from math import ceil, floor
 
-from matplotlib.widgets import Button, Slider
+mpl.use('qtagg')
+mpl.rcParams["path.simplify"] = True
+mpl.rcParams["path.simplify_threshold"] = 1
+
 def getData():
     config = ConfigParser()
 
@@ -55,10 +61,15 @@ def matchParams():
     ) 
     
     fig, ax = plt.subplots()    
-    
+    min_t = min(t_model)-0.1
+    max_t = max(t_model)+0.1
     modelplot, = ax.plot(t_model, h_model, label="Model")
-    original, = ax.plot(timeOriginal(init_shift, len(processor.y_normalized), processor.Fs_target), processor.y_normalized, label="Real data")
-    ax.set_xlim(min(t_model)-0.1, max(t_model)+0.1)
+    
+    t = timeOriginal(init_shift, len(processor.y_normalized), processor.Fs_target)
+    mask = (t >= min_t) & (t <= max_t)
+    
+    original, = ax.plot(t[mask], processor.y_normalized[mask], label="Real data")
+    ax.set_xlim(min_t, max_t)
     ax.set_title("Advanced")
     ax.legend()
     ax.grid(True)
@@ -74,16 +85,55 @@ def matchParams():
         valmax=-2.25,
         valinit=init_shift,
     )
+    
+    x = beginx = 0.06
+    beginy = 0.15
+    width = 0.1
+    height = 0.025
+    horizontal_text_margin = 0.01
+    
+    props = [
+        prop for prop in dir(valves[0])
+        if not prop.startswith("_") and prop != "name"
+    ]
+    
+    y = beginy   
+    for name in props:
+        fig.text(beginx - horizontal_text_margin, y, f"{name}", fontsize=14, ha='right', va='center')
+        y -= height
+    
+    valueTextBoxes = []
+    
+    x += width
+    for params in valves:
+        valueTextBoxes.append([])
+        y = beginy
+        fig.text(x - 0.5 * width, y+height, f"{params.name}", fontsize=14, ha='center', va='center', )
+        for prop in props:
+            subax = fig.add_axes([x - width, y - 0.5*height, width, height]) # Align to center right
+            valueTextBoxes[-1].append(TextBox(
+                ax=subax,
+                label="",
+                initial=str(getattr(params, prop) * (1000 if prop in ["duration", "delay", "onset"] else 1))        
+            ))
+            y -= height
+        x += width
+        
+
     def updateOriginal():
-        original.set_xdata(timeOriginal(shift_slider.val, len(processor.y_normalized), processor.Fs_target))
+        t = timeOriginal(shift_slider.val, len(processor.y_normalized), processor.Fs_target)
+        mask = (t >= min_t) & (t <= max_t)
+        original.set_xdata(t[mask])
+        original.set_ydata(processor.y_normalized[mask])
         fig.canvas.draw_idle()
         
     def updateModel():
+        v = valueTextBoxes
         valvesAdj = [
-            ValveParams(20,  50,   1, slider4.val, 10, "M"),
-            ValveParams(20, 150, 0.5, slider3.val, 10, "T"),
-            ValveParams(20,  50, 0.5, slider2.val, 10, "A"),
-            ValveParams(20,  30, 0.4, slider1.val, 10, "P"),
+            ValveParams(v[0][2], v[0][3], v[0][0], v[0][1], v[0][4], "M"),
+            ValveParams(v[1][2], v[1][3], v[1][0], v[1][1], v[1][4], "T"),
+            ValveParams(v[2][2], v[2][3], v[2][0], v[2][1], v[2][4], "A"),
+            ValveParams(v[3][2], v[3][3], v[3][0], v[3][1], v[3][4], "P"),
         ]
         _, h_model = advanced_model(
             Fs,
@@ -98,43 +148,6 @@ def matchParams():
         fig.canvas.draw_idle()
         
         
-    # Make a vertically oriented slider to control the amplitude
-    axbpm1 = fig.add_axes([0.1, 0.25, 0.0225, 0.63])
-    slider1 = Slider(
-        ax=axbpm1,
-        label="P",
-        valmin=200,
-        valmax=430,
-        valinit=330,
-        orientation="vertical"
-    )
-    axbpm2 = fig.add_axes([0.075, 0.25, 0.0225, 0.63])
-    slider2 = Slider(
-        ax=axbpm2,
-        label="A",
-        valmin=200,
-        valmax=400,
-        valinit=300,
-        orientation="vertical"
-    )
-    axbpm3 = fig.add_axes([0.05, 0.25, 0.0225, 0.63])
-    slider3 = Slider(
-        ax=axbpm3,
-        label="T",
-        valmin=20,
-        valmax=100,
-        valinit=40,
-        orientation="vertical"
-    )
-    axbpm4 = fig.add_axes([0.025, 0.25, 0.0225, 0.63])
-    slider4 = Slider(
-        ax=axbpm4,
-        label="M",
-        valmin=5,
-        valmax=30,
-        valinit=10,
-        orientation="vertical"
-    )
     resetax = fig.add_axes([0.8, 0.025, 0.1, 0.04])
     buttonOriginal = Button(resetax, 'Apply original', hovercolor='0.975')
     resetax = fig.add_axes([0.65, 0.025, 0.1, 0.04])
