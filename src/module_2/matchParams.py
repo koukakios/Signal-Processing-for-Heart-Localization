@@ -11,10 +11,13 @@ from src.module_2.generate import *
 import matplotlib as mpl
 from matplotlib.widgets import Button, Slider, TextBox
 from math import ceil, floor
+import re
+from copy import deepcopy
 
-mpl.use('qtagg')
+# mpl.use('qtagg')
 mpl.rcParams["path.simplify"] = True
 mpl.rcParams["path.simplify_threshold"] = 1
+plt.ion()
 
 def getData():
     config = ConfigParser()
@@ -26,10 +29,20 @@ def getData():
 def timeOriginal(shift, length, Fs):
     return np.linspace(shift, shift+length/Fs, length)
     
+def getCommand(cmd: str, general_specifiers: list, general_props: list, peak_specifiers: list, peak_props: list):
+    pattern = fr"^((?P<specg>[{''.join(general_specifiers)}])\s+(?P<propg>{'|'.join(general_props)})\s+(?P<valg>[\-0-9.,_]+)|"+\
+        fr"(?P<specp>[{''.join(peak_specifiers)}])\s+(?P<propp>{'|'.join(peak_props)})\s+(?P<valp>[\-0-9.,_]+))$"
+    m = re.match(pattern, cmd)
+    if m:
+        spec = m.group("specg") or m.group("specp")
+        prop = m.group("propg") or m.group("propp")
+        val = m.group("valg") or m.group("valp")
+        return spec, prop, val.replace(",", ".").replace("_", "")
+    return False
+
 def matchParams():
     config = ConfigParser()
     Fs = config.HeartSoundModel.Fs
-    BPM = config.HeartSoundModel.BPM
     n = config.HeartSoundModel.NBeats
     len_g = config.LowpassFilter.Size
     lf = config.LowpassFilter.LowFrequency
@@ -38,18 +51,21 @@ def matchParams():
     size=config.LowpassFilter.Size
     
     # Define params
-    valves = [
+    BPM = BPM_init = config.HeartSoundModel.BPM
+    shift = shift_init = -2.28
+    valves_init = [
         ValveParams(20,  50,   1,  10, 10, "M"),
         ValveParams(20, 150, 0.5,  40, 10, "T"),
         ValveParams(20,  50, 0.5, 300, 10, "A"),
         ValveParams(20,  30, 0.4, 330, 10, "P"),
     ]
     
+    valves = deepcopy(valves_init)
+    
     # Get original heart sound
     processor = Processor("samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav", config, save_steps=True, write_result_processed=False, write_result_raw=False)
     processor.process()
     
-    init_shift = -2.28
     t_model, h_model = advanced_model(
         Fs,
         BPM,
@@ -57,7 +73,7 @@ def matchParams():
         hf,
         order,
         size,
-        valves
+        valves_init
     ) 
     
     fig, ax = plt.subplots()    
@@ -65,7 +81,7 @@ def matchParams():
     max_t = max(t_model)+0.1
     modelplot, = ax.plot(t_model, h_model, label="Model")
     
-    t = timeOriginal(init_shift, len(processor.y_normalized), processor.Fs_target)
+    t = timeOriginal(shift_init, len(processor.y_normalized), processor.Fs_target)
     mask = (t >= min_t) & (t <= max_t)
     
     original, = ax.plot(t[mask], processor.y_normalized[mask], label="Real data")
@@ -74,67 +90,14 @@ def matchParams():
     ax.legend()
     ax.grid(True)
     
-    fig.subplots_adjust(left=0.25, bottom=0.25)
-    
-    # Make a horizontal slider to control the frequency.
-    axshift = fig.add_axes([0.25, 0.1, 0.65, 0.03])
-    shift_slider = Slider(
-        ax=axshift,
-        label='Time (s)',
-        valmin=-2.30,
-        valmax=-2.25,
-        valinit=init_shift,
-    )
-    
-    x = beginx = 0.06
-    beginy = 0.15
-    width = 0.1
-    height = 0.025
-    horizontal_text_margin = 0.01
-    
-    props = [
-        prop for prop in dir(valves[0])
-        if not prop.startswith("_") and prop != "name"
-    ]
-    
-    y = beginy   
-    for name in props:
-        fig.text(beginx - horizontal_text_margin, y, f"{name}", fontsize=14, ha='right', va='center')
-        y -= height
-    
-    valueTextBoxes = []
-    
-    x += width
-    for params in valves:
-        valueTextBoxes.append([])
-        y = beginy
-        fig.text(x - 0.5 * width, y+height, f"{params.name}", fontsize=14, ha='center', va='center', )
-        for prop in props:
-            subax = fig.add_axes([x - width, y - 0.5*height, width, height]) # Align to center right
-            valueTextBoxes[-1].append(TextBox(
-                ax=subax,
-                label="",
-                initial=str(getattr(params, prop) * (1000 if prop in ["duration", "delay", "onset"] else 1))        
-            ))
-            y -= height
-        x += width
-        
-
-    def updateOriginal():
-        t = timeOriginal(shift_slider.val, len(processor.y_normalized), processor.Fs_target)
+    def updateOriginal(shift):
+        t = timeOriginal(shift, len(processor.y_normalized), processor.Fs_target)
         mask = (t >= min_t) & (t <= max_t)
         original.set_xdata(t[mask])
         original.set_ydata(processor.y_normalized[mask])
         fig.canvas.draw_idle()
         
-    def updateModel():
-        v = valueTextBoxes
-        valvesAdj = [
-            ValveParams(v[0][2], v[0][3], v[0][0], v[0][1], v[0][4], "M"),
-            ValveParams(v[1][2], v[1][3], v[1][0], v[1][1], v[1][4], "T"),
-            ValveParams(v[2][2], v[2][3], v[2][0], v[2][1], v[2][4], "A"),
-            ValveParams(v[3][2], v[3][3], v[3][0], v[3][1], v[3][4], "P"),
-        ]
+    def updateModel(BPM, valves):
         _, h_model = advanced_model(
             Fs,
             BPM,
@@ -142,26 +105,103 @@ def matchParams():
             hf,
             order,
             size,
-            valvesAdj
+            valves
         ) 
         modelplot.set_ydata(h_model)
         fig.canvas.draw_idle()
-        
-        
-    resetax = fig.add_axes([0.8, 0.025, 0.1, 0.04])
-    buttonOriginal = Button(resetax, 'Apply original', hovercolor='0.975')
-    resetax = fig.add_axes([0.65, 0.025, 0.1, 0.04])
-    buttonModel = Button(resetax, 'Apply model', hovercolor='0.975')
 
-
-    def applyOriginal(event):
-        updateOriginal()
-    buttonOriginal.on_clicked(applyOriginal)
-    def applyModel(event):
-        updateModel()
-    buttonModel.on_clicked(applyModel)
     
-    plt.show()
+    
+    # Interactive menu
+    peak_props = [
+        prop for prop in dir(valves_init[0])
+        if not prop.startswith("_") and prop not in ["name", "toStr"]
+    ]
+    names = [valve.name for valve in valves]
+    general_props = ["BPM", "shift"]
+    general_specs = ["G"]
+    
+    def print_specs():
+        print(f"Specifiers:\n  - General: G\n  - Peaks: {', '.join(names)}")
+    def print_props():
+        print(f"Props:\n  - General: {', '.join(general_props)}\n  - Peaks: {', '.join(peak_props)}")
+    def print_vals(BPM, shift, valves):
+        print(f"""Original:\n  - shift: {shift}s\nModel:\n  - BPM: {BPM}\n  - Valves:""")
+        for valve in valves:
+            print("  - " + "\n    ".join(valve.toStr()))
+    def print_help():
+        print(f"""Help:
+
+Normal usage: 
+<specifier> <prop> <value>
+
+Commands:
+- help: show this menu
+- exit: exit the graph
+- reset: reset all params
+- opt: print all options
+- specs: print all specifiers
+- props: print the props that can be changed
+- print: print set values""")
+        
+    
+    while True:
+        cmd = input("> ").strip()
+        if result := getCommand(cmd, general_specs, general_props, names, peak_props):
+            spec, prop, val = result
+            success = True
+            if spec in general_specs:
+                if spec == "G":
+                    if prop == "BPM":
+                        try:
+                            BPM = int(val)
+                        except:
+                            success = False
+                            print("BPM must be a int")
+                    elif prop == "shift":
+                        try:
+                            shift = float(val)
+                        except:
+                            success = False
+                            print("BPM must be a int")
+                    else:
+                        raise NotImplementedError
+                else:
+                    raise NotImplementedError
+                if success:
+                    updateOriginal(shift)
+            else:
+                try:
+                    setattr(valves[names.index(spec)], prop, float(val) / (1000 if prop in ["delay", "duration", "onset"] else 1))
+                except:
+                    success = False
+                    print("Value not castable to float")
+                if success:
+                    updateModel(BPM, valves)
+        else:
+            match cmd:
+                case "exit":
+                    return
+                case "opt":
+                    print_specs()
+                    print_props()
+                case "specs":
+                    print_specs()
+                case "props":
+                    print_props()
+                case "help":
+                    print_help()
+                case "reset":
+                    BPM = BPM_init
+                    shift = shift_init
+                    valves = deepcopy(valves_init)
+                    updateModel(BPM, valves)
+                    updateOriginal(shift)
+                case "print":
+                    print_vals(BPM, shift, valves)
+                case _:
+                    print(f"{cmd} is an unknown command. Use `help` to view the help menu")
+        
 
 
 

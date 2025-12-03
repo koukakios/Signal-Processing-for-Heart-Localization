@@ -12,6 +12,15 @@ class ValveParams:
         self.delay = delay_ms / 1000
         self.onset = onset_ms / 1000
         self.name = name
+    def toStr(self):
+        return [
+            f"Name: {self.name}",
+            f"  Duration: {self.duration*1000}ms",
+            f"  Frequency: {self.freq}Hz",
+            f"  Amplitude: {self.ampl}",
+            f"  Delay: {self.delay*1000}ms",
+            f"  Onset: {self.onset*1000}ms",
+        ]
 
 def advanced_model_valve_params(params: ValveParams, Fs:int):
     return advanced_model_valve(params.duration, params.freq, params.ampl, params.delay, params.onset, Fs)
@@ -24,10 +33,11 @@ def advanced_model_valve(duration: float, freq:float, ampl:float, delay:float, o
     # Create the transfer function system of the sound
     b, a = zpk2tf([], [a-1j*omega, a+1j*omega], omega)
     system = TransferFunction(b, a)
-    # Time array (from 0 to duration with step size of 1/Fs)
-    t = np.linspace(0, onset, int(Fs * onset))
-    # Impulse response (time domain)
-    t_onset, h_onset = impulse(system, T=t)
+    if onset > 0:
+        # Time array (from 0 to duration with step size of 1/Fs)
+        t = np.linspace(0, onset, int(Fs * onset))
+        # Impulse response (time domain)
+        t_onset, h_onset = impulse(system, T=t)
     
     a = 1/duration
     omega = 2*np.pi*freq
@@ -42,7 +52,7 @@ def advanced_model_valve(duration: float, freq:float, ampl:float, delay:float, o
     
     # Assemble reponse
     samples_delay = int(Fs * delay)
-    h_out = ampl*np.concatenate([np.zeros(samples_delay), onset_ampl*h_onset, h_beat])
+    h_out = ampl*np.concatenate([np.zeros(samples_delay), ([] if onset <= 0 else onset_ampl*h_onset), h_beat])
     t_out = np.linspace(0, delay+duration+onset, len(h_out))
     
     return t_out, h_out
