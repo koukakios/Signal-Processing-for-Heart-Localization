@@ -31,9 +31,9 @@ def a_lin(theta, M, d, v, f0):
     return result
 
 
-def matchedbeamforming( th_range, M, d, v, f0):
+def MVDR( th_range, M, d, v, f0):
     
-    Rx = autocorr(np.array([0,20]), M, d, v, f0)
+    Rx = autocorr(np.array([0,15]), M, d, v, f0)
     A = a_lin(th_range, M, d, v, f0)
     P =np.array( [  1/(np.matmul(np.matmul(A[:,i].conj().T,np.linalg.inv(Rx)),A[:,i]))   for i in range (len(th_range)) ] )
     print(f"A shape {A.shape}")
@@ -43,13 +43,18 @@ def matchedbeamforming( th_range, M, d, v, f0):
     print(f"multiplication shape {np.matmul(A.conj().T,Rx).shape}")
     return P
 
-
-P = matchedbeamforming(np.array([i for i in range (-90,90)]), 7, 1, 343, 250)
-
+M = 7
+v = 343
+f0 = 250
+D = 0.5
+lamda = v/f0
+d = D*lamda
+P = MVDR(np.array([i for i in range (-90,90)]), M, d, v, f0)
 
 
 plt.figure()
-plt.plot(P)
+x = np.arange(-90,90);
+plt.plot(x,P)
 plt.show()
 
 
