@@ -94,6 +94,8 @@ def segment_only_with_len_filter_and_thus_deprecated_should_not_be_used(signal: 
 
 def segment(signal: np.ndarray, domains: np.ndarray, comp: Callable[[int], int]):
     mask = np.zeros(len(signal), dtype=bool)
+    concatenated = []
     for start, end in domains:
         mask[comp(start):comp(end)] = True
-    return np.where(mask, signal, 0)
+        concatenated.extend(signal[comp(start):comp(end)])
+    return np.where(mask, signal, 0), np.array(concatenated) 

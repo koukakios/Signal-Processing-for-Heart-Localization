@@ -1,5 +1,6 @@
 from lib.processing.functions import *
 from lib.processing.dataprocessing import *
+from lib.os.pathutils import ensurePathExists
 from lib.config.ConfigParser import ConfigParser
 from scipy.io import wavfile
 from pathlib import Path
@@ -11,7 +12,7 @@ class Processor:
     
     This class allows to easily reuse code across the whole codebase and optionally save results for plotting them.
     """
-    def __init__(self, file_path: str, config: ConfigParser, save_steps: bool = False, log: bool=True, write_result_processed: bool = True, write_result_raw: bool = True):
+    def __init__(self, file_path: str, config: ConfigParser, subfolder: str = "", save_steps: bool = False, log: bool=True, write_result_processed: bool = True, write_result_raw: bool = True, postprocessing: bool = True):
         """Initializes the processor.
 
         Args:
@@ -20,11 +21,13 @@ class Processor:
             save_results (bool, optional): Whether to save the substeps. Defaults to False.
             log (bool, optional): Whether to log its process in the console. Defaults to True.
         """
-        if not Path(file_path).exists():
+        if file_path is not None and not Path(file_path).exists():
             raise IOError(f"{file_path} not found")
         
         # Save path to wav file
         self.file_path = file_path
+        # Save path to folder to save results in
+        self.subfolder = subfolder
         
         # Retrieve config values
         self.lp_low_freq = config.LowpassFilter.LowFrequency
@@ -40,11 +43,14 @@ class Processor:
         self.segmentation_min_dist = config.Segmentation.MinDist * self.Fs_target
         self.segmentation_threshold = config.Segmentation.EnvelopeThreshold
         self.generation_path = config.Segmentation.OutputPath
+        self.concat_path = config.Segmentation.ConcatPath
+        self.segmented_path = config.Segmentation.SegmentedPath
         
         self.save_steps = save_steps
         self.write_result_processed = write_result_processed
         self.write_result_raw = write_result_raw
         self.log_enabled = log
+        self.postprocessing = postprocessing
         # Initialize fields that values can be saved to
         self.Fs_original = None
         self.x = None
@@ -74,6 +80,8 @@ class Processor:
     def process(self):
         """Initialize the processing and optionally save the steps in between.
         """
+        if self.file_path is None:
+            raise RuntimeError("Filepath is None")
         self.log("Reading file...")
         Fs_original, x = wavfile.read(self.file_path)
     
@@ -109,7 +117,7 @@ class Processor:
         s1_peaks, s2_peaks, uncertain = self.classify_peaks(peaks)
         print(uncertain)
         self.log("Troubleshooting")
-        if len(uncertain) > 0:
+        if len(uncertain) > 0 and self.postprocessing:
             s1_peaks, s2_peaks, uncertain = self.solve_uncertains(see_normalized, peaks, s1_peaks, s2_peaks, uncertain, self.segmentation_solve_uncertain_length, self.Fs_target, self.segmentation_min_height, self.segmentation_min_dist)
         
 
@@ -128,21 +136,40 @@ class Processor:
         # segmented_s2_raw = segment(x, ind_s2, len(see_filter)+len(g))
         see_filter_comp = int(len(see_filter)/2)
         g_filter_comp = int(len(g)/2)
-        segmented_s1 = segment(y_normalized, ind_s1, lambda index: (index - see_filter_comp))
-        segmented_s2 = segment(y_normalized, ind_s2, lambda index: (index - see_filter_comp))
-        segmented_s1_raw = segment(x, ind_s1, lambda index: (index - see_filter_comp) * M - g_filter_comp)
-        segmented_s2_raw = segment(x, ind_s2, lambda index: (index - see_filter_comp) * M - g_filter_comp)
+        segmented_s1, segmented_s1_concat = segment(y_normalized, ind_s1, lambda index: (index - see_filter_comp))
+        segmented_s2, segmented_s2_concat = segment(y_normalized, ind_s2, lambda index: (index - see_filter_comp))
+        segmented_s1_raw, segmented_s1_raw_concat = segment(x, ind_s1, lambda index: (index - see_filter_comp) * M - g_filter_comp)
+        segmented_s2_raw, segmented_s2_raw_concat = segment(x, ind_s2, lambda index: (index - see_filter_comp) * M - g_filter_comp)
+        
+        # Path were it is saved "value from config/subfolder/(concat|segmented)/(raw|processed)/file"
+        basefolder = join(self.generation_path, self.subfolder)
         
         if self.write_result_processed:
             self.log("Writing processed files...")
             file_name = splitext(basename(self.file_path))[0]
-            write(join(self.generation_path, f"segmented-s1-processed-{file_name}.wav"), self.Fs_target, segmented_s1)
-            write(join(self.generation_path, f"segmented-s2-processed-{file_name}.wav"), self.Fs_target, segmented_s2)
+            
+            concat_file_path = join(basefolder, self.concat_path, "processed")
+            ensurePathExists(concat_file_path)
+            write(join(concat_file_path, f"segmented-s1-processed-{file_name}.wav"), self.Fs_target, segmented_s1_concat)
+            write(join(concat_file_path, f"segmented-s2-processed-{file_name}.wav"), self.Fs_target, segmented_s2_concat)
+            
+            segment_file_path = join(basefolder, self.segmented_path, "processed")
+            ensurePathExists(segment_file_path)
+            write(join(segment_file_path, f"segmented-s1-processed-{file_name}.wav"), self.Fs_target, segmented_s1)
+            write(join(segment_file_path, f"segmented-s2-processed-{file_name}.wav"), self.Fs_target, segmented_s2)
         if self.write_result_raw:
             self.log("Writing raw files...")
             file_name = splitext(basename(self.file_path))[0]
-            write(join(self.generation_path, f"segmented-s1-raw-{file_name}.wav"), self.Fs_target, segmented_s1_raw)
-            write(join(self.generation_path, f"segmented-s2-raw-{file_name}.wav"), self.Fs_target, segmented_s2_raw)
+
+            concat_file_path = join(basefolder, self.concat_path, "raw")
+            ensurePathExists(concat_file_path)
+            write(join(concat_file_path, f"segmented-s1-raw-{file_name}.wav"), Fs_original, segmented_s1_raw_concat)
+            write(join(concat_file_path, f"segmented-s2-raw-{file_name}.wav"), Fs_original, segmented_s2_raw_concat)
+            
+            segment_file_path = join(basefolder, self.segmented_path, "raw")
+            ensurePathExists(segment_file_path)
+            write(join(segment_file_path, f"segmented-s1-raw-{file_name}.wav"), Fs_original, segmented_s1_raw)
+            write(join(segment_file_path, f"segmented-s2-raw-{file_name}.wav"), Fs_original, segmented_s2_raw)
 
         
         self.log("Finished! :-)")
@@ -212,6 +239,8 @@ class Processor:
         minima = minima[minima[:,1].argsort()[::-1]]
         # Sort maxima ascending
         maxima = maxima[maxima[:,1].argsort()]
+        print(minima[:10])
+        print(maxima[:10])
         
         y_line = None
         # Get line that goes through most lines in the difference plot
@@ -222,6 +251,7 @@ class Processor:
                 y_line = 0.5 * (max(minima[:,1]) + min(maxima[:,1]))
             
             if y_line != None:
+                print(y_line)
                 break
             elif len(minima) == 0 or len(maxima) == 0:
                 raise RuntimeError("No line found")
@@ -340,7 +370,39 @@ class Processor:
                 
             
         
+    def open_file(self, file_path):
+        if not Path(file_path).exists():
+            raise IOError(f"{file_path} not found")
         
+        # Save path to wav file
+        self.file_path = file_path
+        
+        # Initialize fields that values can be saved to
+        self.Fs_original = None
+        self.x = None
+        self.g = None
+        self.y = None
+        self.M = None
+        self.y_downsampled = None
+        self.y_normalized = None
+        self.y_energy = None
+        self.see_filter = None
+        self.see = None
+        self.see_normalized = None
+        self.peaks = None
+        self.peak_properties = None
+        self.s1_peaks = None
+        self.s2_peaks = None
+        self.s1_outliers = None
+        self.s2_outliers = None
+        self.y_line = None
+        self.uncertain = None
+        self.ind_s1 = None
+        self.ind_s2 = None
+        self.segmented_s1 = None
+        self.segmented_s2 = None
+        self.segmented_s1_raw = None
+        self.segmented_s2_raw = None
     
     def log(self, msg):
         if self.log_enabled:

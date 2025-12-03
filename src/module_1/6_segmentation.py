@@ -12,8 +12,9 @@ PLOT_RAW = False
 
 def segmentation(config):
     # path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav"
-    path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-05_channel_4.wav"
-    processor = Processor(path, config, save_steps=True)
+    # path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-05_channel_4.wav"
+    path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_2.wav"
+    processor = Processor(path, config, save_steps=True, postprocessing=False)
     
     processor.process()
     
