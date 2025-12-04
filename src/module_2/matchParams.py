@@ -140,7 +140,9 @@ Commands:
     
     while True:
         cmd = input("> ").strip()
-        if result := getCommand(cmd, general_specs, general_props, names, peak_props):
+        if cmd == "":
+            continue
+        elif result := getCommand(cmd, general_specs, general_props, names, peak_props):
             spec, prop, val = result
             success = True
             if spec in general_specs:
