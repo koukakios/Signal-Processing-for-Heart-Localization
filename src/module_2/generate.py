@@ -3,6 +3,7 @@ import numpy as np
 from src.module_2.generate import *
 from lib.config.ConfigParser import ConfigParser
 from lib.processing.functions import construct_bandpass_filter, apply_filter
+from random import random
 
 class ValveParams:
     def __init__(self, delay_ms:float, duration_total_ms: float, duration_onset_ms:float, a_onset: float, a_main: float, 
@@ -37,10 +38,21 @@ class ValveParams:
         return list(map(str, [self.name,self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]))
     def num_values(self):
         return [self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]
+    def randomize(self, ratio):
+        self.delay = randomize(self.delay, ratio)
+        self.duration_total = randomize(self.duration_total, ratio)
+        self.duration_onset = randomize(self.duration_onset, ratio)
+        self.a_onset = randomize(self.a_onset, ratio)
+        self.a_main = randomize(self.a_main, ratio)
+        self.ampl_onset = randomize(self.ampl_onset, ratio)
+        self.ampl_main = randomize(self.ampl_main, ratio)
+        self.freq_onset = randomize(self.freq_onset, ratio)
+        self.freq_main = randomize(self.freq_main, ratio)
 
 def advanced_model_valve_params(params: ValveParams, Fs:int):
-    return advanced_model_valve(delay=params.delay, duration_total=params.duration_total, duration_onset=params.duration_onset, a_onset=params.a_onset, a_main=params.a_main, 
-                         ampl_onset=params.ampl_onset,  ampl_main=params.ampl_main, freq_onset=params.freq_onset, freq_main=params.freq_main, Fs=Fs)
+    return advanced_model_valve(delay = params.delay, duration_total = params.duration_total, duration_onset = params.duration_onset, 
+                                a_onset = params.a_onset, a_main = params.a_main, ampl_onset = params.ampl_onset,  
+                                ampl_main = params.ampl_main, freq_onset = params.freq_onset, freq_main = params.freq_main, Fs = Fs)
 
 def advanced_model_valve(delay:float, duration_total: float, duration_onset:float, a_onset: float, a_main: float, 
                          ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, Fs:int):
@@ -80,9 +92,8 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
     
     return t_out, h_out
 
-def advanced_model(Fs, BPM, lf, hf, order, size, valves, n):
+def advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves):
     # Generate sounds of single valves
-
     t_out = []
     h_out = []
     for valve in valves:
@@ -99,6 +110,9 @@ def advanced_model(Fs, BPM, lf, hf, order, size, valves, n):
             h = np.pad(h, (0, h_len - len(h)))
             h_total += h
         else:
+            import matplotlib.pyplot as plt
+            plt.plot(h)
+            plt.show()
             raise RuntimeError("One beat longer than reserved space")
     
     # Filter signal for nice thigns
@@ -112,7 +126,30 @@ def advanced_model(Fs, BPM, lf, hf, order, size, valves, n):
     h_filtered = apply_filter(h_total, g)
     t_filtered = np.linspace(-len(g)/Fs/2, (len(h_filtered) + len(g))/Fs/2, len(h_filtered))
     
-    return repeat(n, h_filtered, t_filtered, Fs)
+    return t_filtered, h_filtered
+
+def advanced_model(Fs, BPM, lf, hf, order, size, valves, n, randomize_enabled: bool = False, r_ratio: float = 0, bpm_ratio: float = 0):
+    if not randomize_enabled:
+        t_filtered, h_filtered = advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves)
+        return repeat(n, h_filtered, t_filtered, Fs)
+    else:
+        h_full = np.array([], dtype=np.int64)
+        for i in range(n):
+            [valve.randomize(r_ratio) for valve in valves]
+            t_filtered, h_filtered = advanced_model_single_beat(
+                Fs, 
+                randomize(BPM, bpm_ratio), 
+                lf, 
+                hf, 
+                order, 
+                size, 
+                valves)
+            h_full = np.r_[h_full, h_filtered]
+        t_full = np.linspace(0, len(h_full)/Fs, len(h_full))
+        return t_full, h_full
+        
+def randomize(val, ratio):
+    return val * (1 + ratio * random())
 
 def repeat(n, h_filtered, t_filtered, Fs):
     h_full = np.tile(h_filtered, n)

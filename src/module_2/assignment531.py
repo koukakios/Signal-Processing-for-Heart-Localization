@@ -68,7 +68,7 @@ def threeD_model():
     
         log(f"{delays},{gains_normalized}")
         # Add delays
-        valves[:,0] += delays
+        # valves[:,0] += delays
         # Adjust for gains
         valves[:,3] *= gains_normalized
         valves[:,4] *= gains_normalized
@@ -90,8 +90,9 @@ def threeD_model():
             ) for valve in valves
         ]
         
-        signal, Fs_this = generateSounds(config, valvesParams, write_enabled = False)
+        signal, Fs_this = generateSounds(config, valvesParams, write_enabled = False, randomize = True)
         Fs = Fs or Fs_this
+        
         signals.append(signal)
         
     return signals, Fs
