@@ -13,7 +13,7 @@ valves = [
     ValveParams(370,120,10,10,-40.0,0.1,0.6,30,30,"P")
 ]
 BPM = 66
-Fs = 50_000
+Fs = config.HeartSoundModel.Fs
 
 len_g = config.LowpassFilter.Size
 lf = config.LowpassFilter.LowFrequency

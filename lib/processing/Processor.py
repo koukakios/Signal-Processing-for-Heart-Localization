@@ -145,7 +145,7 @@ class Processor:
             s1_peaks, s2_peaks, uncertain = self.solve_uncertains(see_normalized, peaks, s1_peaks, s2_peaks, uncertain, 
                                                                   self.segmentation_solve_uncertain_length, self.Fs_target, 
                                                                   self.segmentation_min_height, self.segmentation_min_dist)
-        
+        self.actual_segmentation_min_height = 0
 
         
         # Sort arrays for further processing
