@@ -165,7 +165,7 @@ class Plot:
         
         contents = [[self.n,self.BPM,self.shift], self.valves[0].properties()]
         for valve in self.valves:
-            contents.append(valve.values())
+            contents.append(valve.values_str())
         
         s = "\n".join([",".join(c) for c in contents])
         

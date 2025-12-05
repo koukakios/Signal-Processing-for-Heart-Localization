@@ -33,8 +33,10 @@ class ValveParams:
         ]
     def properties(self):
         return "name,delay,duration_total,duration_onset,a_onset,a_main,ampl_onset,ampl_main,freq_onset,freq_main"
-    def values(self):
+    def values_str(self):
         return list(map(str, [self.name,self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]))
+    def num_values(self):
+        return [self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]
 
 def advanced_model_valve_params(params: ValveParams, Fs:int):
     return advanced_model_valve(delay=params.delay, duration_total=params.duration_total, duration_onset=params.duration_onset, a_onset=params.a_onset, a_main=params.a_main, 
