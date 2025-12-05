@@ -58,7 +58,7 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
     if duration_main > 0:
         omega_main = 2*np.pi*freq_main
         # Create the transfer function system of the sound
-        b, a = zpk2tf([], [-a_main-1j*omega_main, -a_main+1j*omega_main], omega_main)
+        b, a = zpk2tf([], [a_main-1j*omega_main, a_main+1j*omega_main], omega_main)
         system = TransferFunction(b, a)
         # Time array (from 0 to duration with step size of 1/Fs)
         t = np.linspace(0, duration_main, int(Fs * duration_main))

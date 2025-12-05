@@ -9,6 +9,7 @@ from math import ceil
 from lib.config.ConfigParser import ConfigParser
 from lib.processing.Processor import Processor
 from src.module_2.generate import *
+from scipy.fft import fft, fftshift
 
 mpl.use('qtagg')
 mpl.rcParams["path.simplify"] = True
@@ -51,20 +52,35 @@ class Plot:
         self.model = None
         
     def plot_init(self):
-        original_y = self.get_original_data()
-        t_model, h_model = self.get_model()
+        original_y, original_freq, original_Y = self.get_original_data()
+        t_model, h_model, freq, H = self.get_model()
         min_t = min(t_model)-0.1
         max_t = max(t_model)+0.1
         
-        self.fig, ax = plt.subplots()    
+        self.fig, ax = plt.subplots(1, 2, figsize=(8,4), constrained_layout=True)    
         
-        self.model, = ax.plot(t_model, h_model, label="Model")
-        self.original, = ax.plot(self.get_original_time(), original_y, label="Real data")
+        timeax = ax[0]
+        freqax = ax[1]
         
-        ax.set_xlim(min_t, max_t)
-        ax.set_title("Match model with reald data")
-        ax.legend()
-        ax.grid(True)
+        self.model, = timeax.plot(t_model, h_model, label="Model")
+        self.original, = timeax.plot(self.get_original_time(), original_y, label="Real data")
+        
+        timeax.set_xlim(min_t, max_t)
+        timeax.set_title("Match model with real data in time domain")
+        timeax.legend(loc="best")
+        timeax.grid(True)
+        timeax.set_xlabel("Time [s]")
+        timeax.set_ylabel("Amplitude")
+        
+        self.model_freq, = freqax.plot(freq, np.abs(H), label="Model")
+        freqax.plot(original_freq, np.abs(original_Y), label="Real data")
+        
+        freqax.set_xlim(0, np.max(original_freq))
+        freqax.set_title("Match model with real data in frequency domain")
+        freqax.legend(loc="best")
+        freqax.grid(True)
+        freqax.set_xlabel("Freq [Hz]")
+        freqax.set_ylabel("Amplitude")
         
     def update_original(self, refresh_view: bool = True):
         t = self.get_original_time()
@@ -75,10 +91,11 @@ class Plot:
             
         
     def update_model(self, refresh_view: bool = True):
-        t, h = self.get_model()
+        t, h, freq, H = self.get_model()
         
         self.model.set_xdata(t)
         self.model.set_ydata(h)
+        self.model_freq.set_ydata(H)
         
         if refresh_view:
             self.fig.canvas.draw_idle()
@@ -91,7 +108,11 @@ class Plot:
         self.original_length = len(processor.y_normalized)
         self.original_Fs = processor.Fs_target
         
-        return processor.y_normalized
+        Y = fftshift(fft(processor.y_normalized))
+        Y = Y/np.max(np.abs(Y))
+        freq = np.linspace(-processor.Fs_target/2, processor.Fs_target/2, len(Y))
+        
+        return processor.y_normalized, freq, Y
         
     def get_original_time(self):
         return np.linspace(self.shift, self.shift+self.original_length/self.original_Fs, self.original_length)
@@ -107,7 +128,12 @@ class Plot:
             self.valves,
             self.n
         ) 
-        return t_model, h_model
+        
+        H = fftshift(fft(h_model))
+        H = H/np.max(np.abs(H))
+        freq = np.linspace(-self.Fs/2, self.Fs/2, len(H))
+        
+        return t_model, h_model, freq, H
     
     def reset(self):
         self.n = self.n_init
@@ -119,7 +145,7 @@ class Plot:
         self.update_original()
         
     def print(self):
-        print(f"""Original:\n  - shift: {self.shift}s\nModel:\n  - BPM: {self.BPM}\n  - n: {self.n}\n  - Valves:""")
+        print(f"""File: {self.sound_path.stem}\n Original:\n  - shift: {self.shift}s\n Model:\n  - BPM: {self.BPM}\n  - n: {self.n}\n  - Valves:""")
         for valve in self.valves:
             print("      - " + "\n        ".join(valve.toStr()))
             
