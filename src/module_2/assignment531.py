@@ -46,12 +46,15 @@ def threeD_model():
         
         dists_to_valves = np.linalg.norm(valve_locs-new_mic_loc, axis=1)
         
+        # calc delays and gains using distances to the valves
         delays = dists_to_valves/config.Multichannel.V_body
+        gains = 1/dists_to_valves
+        # normalized the gains
+        gains_normalized = gains/max(gains)
         
-        gain_constant = 1
-        gains = gain_constant/dists_to_valves
         
-        print(delays)
+        
+        print(delays,gains_normalized)
         break
 
 
