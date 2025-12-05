@@ -9,7 +9,6 @@ from math import ceil
 from lib.config.ConfigParser import ConfigParser
 from lib.processing.Processor import Processor
 from src.module_2.generate import *
-import threading
 
 mpl.use('qtagg')
 mpl.rcParams["path.simplify"] = True

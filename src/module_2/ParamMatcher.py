@@ -1,7 +1,6 @@
 import threading
 import matplotlib.pyplot as plt
 import queue
-from time import sleep
 
 from lib.config.ConfigParser import ConfigParser
 
