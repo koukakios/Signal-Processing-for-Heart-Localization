@@ -6,6 +6,8 @@ def generateStandardCommands(plot: Plot) -> CommandProcessor:
     
     cp.register_command("reset", plot.reset, helpmsg="Reset the values to initial values")
     cp.register_command("print", plot.print, helpmsg="Print the set values")
+    cp.register_command("export_text", plot.export_text, args=["file"], helpmsg="Export all the values to a file in readable format")
+    cp.register_command("export_csv", plot.export_csv, args=["file"], helpmsg="Export all the values to a file in csv format")
     cp.register_command("order", plot.print_order, helpmsg="Print the standard order of the valves")
     cp.register_command("play", plot.play_audio, args=["duration"], helpmsg="Play the sound for <duration> seconds")
     cp.register_command("stop_audio", plot.stop_audio, helpmsg="Stop the playing sound")

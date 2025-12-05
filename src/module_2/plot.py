@@ -95,7 +95,8 @@ class Plot:
         
         self.model.set_xdata(t)
         self.model.set_ydata(h)
-        self.model_freq.set_ydata(H)
+        self.model_freq.set_xdata(freq)
+        self.model_freq.set_ydata(np.abs(H))
         
         if refresh_view:
             self.fig.canvas.draw_idle()
@@ -144,10 +145,34 @@ class Plot:
         self.update_model(refresh_view=False)
         self.update_original()
         
-    def print(self):
-        print(f"""File: {self.sound_path.stem}\n Original:\n  - shift: {self.shift}s\n Model:\n  - BPM: {self.BPM}\n  - n: {self.n}\n  - Valves:""")
+    def generate_summary(self):
+        s = ""
+        s += f"""File: {self.sound_path.stem}\n Original:\n  - shift: {self.shift}s\n Model:\n  - BPM: {self.BPM}\n  - n: {self.n}\n  - Valves:\n"""
         for valve in self.valves:
-            print("      - " + "\n        ".join(valve.toStr()))
+            s += ("      - " + "\n        ".join(valve.toStr())+"\n")
+        return s
+            
+    def export_text(self, file):
+        file = Path(file)
+        file.parent.mkdir(parents=True, exist_ok=True)
+        with open(file, "w") as fp:
+            fp.write(self.generate_summary())
+            
+    def export_csv(self, file):
+        file = Path(file)
+        file.parent.mkdir(parents=True, exist_ok=True)
+        
+        contents = [[self.n,self.BPM,self.shift], self.valves[0].properties()]
+        for valve in self.valves:
+            contents.append(valve.values())
+        
+        s = "\n".join([",".join(c) for c in contents])
+        
+        with open(file, "w") as fp:
+            fp.write(s)
+        
+    def print(self):
+        print(self.generate_summary().strip())
             
     def play_audio(self, duration: str = ""):
         t_model, h_model = advanced_model(
