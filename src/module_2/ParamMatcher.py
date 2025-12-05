@@ -18,9 +18,9 @@ class ParamMatcher:
         self.executing_event = threading.Event()
         self.cancelled_event = threading.Event()
         
-        self.cli = CLI(self.cmd_queue, self.stop_event, self.executing_event, self.cancelled_event)
         self.plot = Plot(path, config)
         self.commands: CommandProcessor = generateStandardCommands(self.plot)
+        self.cli = CLI(self.cmd_queue, self.stop_event, self.executing_event, self.cancelled_event, self.commands.get_autocompletion_dict())
         
         self.timer = None
         

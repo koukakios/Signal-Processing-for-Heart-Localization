@@ -6,7 +6,8 @@ def generateStandardCommands(plot: Plot) -> CommandProcessor:
     
     cp.register_command("reset", plot.reset, helpmsg="Reset the values to initial values")
     cp.register_command("print", plot.print, helpmsg="Print the set values")
-    cp.register_command("play", plot.play, args=["duration"], helpmsg="Play the sound for <duration> seconds")
+    cp.register_command("play", plot.play_audio, args=["duration"], helpmsg="Play the sound for <duration> seconds")
+    cp.register_command("stop_audio", plot.stop_audio, helpmsg="Stop the playing sound")
     cp.register_command("add", plot.add_valve, args=["name"], helpmsg="Add another valve noise to the model")
     
     # Add refresh handlers for graph

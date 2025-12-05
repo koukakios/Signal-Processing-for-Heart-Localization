@@ -9,6 +9,7 @@ from math import ceil
 from lib.config.ConfigParser import ConfigParser
 from lib.processing.Processor import Processor
 from src.module_2.generate import *
+import threading
 
 mpl.use('qtagg')
 mpl.rcParams["path.simplify"] = True
@@ -123,7 +124,7 @@ class Plot:
         for valve in self.valves:
             print("      - " + "\n        ".join(valve.toStr()))
             
-    def play(self, duration: str = ""):
+    def play_audio(self, duration: str = ""):
         t_model, h_model = advanced_model(
             self.Fs,
             self.BPM,
@@ -146,6 +147,9 @@ class Plot:
             sd.play(h_model[:ceil(duration*self.Fs)], self.Fs)
         else:
             sd.play(h_model, self.Fs)
+        
+    def stop_audio(self):
+        sd.stop()
     
     def add_valve(self, name):
         self.valves.append(ValveParams( 10, 0, 0, 1, 1, 1, 1, 50, 50, name))

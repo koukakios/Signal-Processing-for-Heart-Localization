@@ -151,4 +151,18 @@ class CommandProcessor:
             print("    Props:")
             for spec, meta in sorted(self.symbolics[group]["props"].items()):
                 print(f"      {spec:10} {f'<{meta["dtype"].__name__}>':8} {meta["helpmsg"]}")
+                
+    def get_autocompletion_dict(self):
+        # Add the commands 
+        autocompletion = {command:None for command in self.commands}
+            
+        # Add the symbolics
+        for group in self.symbolics:
+            specs = self.symbolics[group]["specs"]
+            props = self.symbolics[group]["props"]
+            for spec in specs:
+                autocompletion[spec] = {}
+                for prop in props:
+                    autocompletion[spec][prop] = None
         
+        return autocompletion
