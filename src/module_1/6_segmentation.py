@@ -22,7 +22,8 @@ def segmentation(config):
         ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-05_channel_6.wav",
     ]
     path = paths[1]
-    processor = Processor(path, config, save_steps=True, postprocessing=True)
+    path = ".\\generated\\hearbeat model\\Advanced-48000Hz-66BPM-200 beats.wav"
+    processor = Processor(path, config, save_steps=True, postprocessing=True, subfolder="Generated sounds")
     
     processor.process()
     

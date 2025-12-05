@@ -48,10 +48,10 @@ def matchParams():
     BPM = BPM_init = config.HeartSoundModel.BPM
     shift = shift_init = -2.28
     valves_init = [
-        ValveParams(20,  50,   1,  10, 10, "M"),
-        ValveParams(20, 150, 0.5,  40, 10, "T"),
-        ValveParams(20,  50, 0.5, 300, 10, "A"),
-        ValveParams(20,  30, 0.4, 330, 10, "P"),
+        ValveParams( 10, 30, 10, 10, 0.05, 0.1,   1,  50,  50, "M"), 
+        ValveParams( 40, 30, 10, 10, 0.05, 0.1, 0.5, 150, 150, "T"), 
+        ValveParams(300, 30, 10, 10, 0.05, 0.1, 0.5,  50,  50, "A"), 
+        ValveParams(330, 30, 10, 10, 0.05, 0.1, 0.4,  30,  30, "P"), 
     ]
     
     valves = deepcopy(valves_init)

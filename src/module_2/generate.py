@@ -5,55 +5,76 @@ from lib.config.ConfigParser import ConfigParser
 from lib.processing.functions import construct_bandpass_filter, apply_filter
 
 class ValveParams:
-    def __init__(self, duration_ms: float, freq: float, ampl:float, delay_ms:float, onset_ms:float, name: str=None):
-        self.duration = duration_ms / 1000
-        self.freq = freq
-        self.ampl = ampl
+    def __init__(self, delay_ms:float, duration_total_ms: float, duration_onset_ms:float, a_onset: float, a_main: float, 
+                         ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, name: str=None):
         self.delay = delay_ms / 1000
-        self.onset = onset_ms / 1000
+        self.duration_total = duration_total_ms / 1000
+        self.duration_onset = duration_onset_ms / 1000
+        self.a_onset = a_onset
+        self.a_main = a_main
+        self.ampl_onset = ampl_onset
+        self.ampl_main = ampl_main
+        self.freq_onset = freq_onset
+        self.freq_main = freq_main
+
         self.name = name
     def toStr(self):
         return [
             f"Name: {self.name}",
-            f"  Duration: {self.duration*1000}ms",
-            f"  Frequency: {self.freq}Hz",
-            f"  Amplitude: {self.ampl}",
             f"  Delay: {self.delay*1000}ms",
-            f"  Onset: {self.onset*1000}ms",
+            f"  Total duration: {self.duration_total*1000}ms",
+            f"  Duration onset: {self.duration_onset*1000}ms",
+            f"  A onset: {self.a_onset}",
+            f"  A main: {self.a_main}",
+            f"  Ampl onset: {self.ampl_onset}",
+            f"  Ampl main: {self.ampl_main}",
+            f"  Freq onset: {self.freq_onset}Hz",
+            f"  Freq main: {self.freq_main}Hz",
         ]
+    def properties(self):
+        return "name,delay,duration_total,duration_onset,a_onset,a_main,ampl_onset,ampl_main,freq_onset,freq_main"
+    def values(self):
+        return list(map(str, [self.name,self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]))
 
 def advanced_model_valve_params(params: ValveParams, Fs:int):
-    return advanced_model_valve(params.duration, params.freq, params.ampl, params.delay, params.onset, Fs)
+    return advanced_model_valve(delay=params.delay, duration_total=params.duration_total, duration_onset=params.duration_onset, a_onset=params.a_onset, a_main=params.a_main, 
+                         ampl_onset=params.ampl_onset,  ampl_main=params.ampl_main, freq_onset=params.freq_onset, freq_main=params.freq_main, Fs=Fs)
 
-def advanced_model_valve(duration: float, freq:float, ampl:float, delay:float, onset:float, Fs:int):
-    a = 10
-    onset_ampl = 0.1
-    omega = 2*np.pi*freq
+def advanced_model_valve(delay:float, duration_total: float, duration_onset:float, a_onset: float, a_main: float, 
+                         ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, Fs:int):
+    # a_onset = 10
+    # ampl_onset = 0.1
+    # freq_onset = freq_main
+    duration_main = duration_total - duration_onset if duration_total >= duration_onset else 0
     
-    # Create the transfer function system of the sound
-    b, a = zpk2tf([], [a-1j*omega, a+1j*omega], omega)
-    system = TransferFunction(b, a)
-    if onset > 0:
+    if duration_onset > 0:
+        omega_onset = 2*np.pi*freq_onset
+    
+        # Create the transfer function system of the sound
+        b, a = zpk2tf([], [a_onset-1j*omega_onset, a_onset+1j*omega_onset], omega_onset)
+        system = TransferFunction(b, a)
         # Time array (from 0 to duration with step size of 1/Fs)
-        t = np.linspace(0, onset, int(Fs * onset))
+        t = np.linspace(0, duration_onset, int(Fs * duration_onset))
         # Impulse response (time domain)
         t_onset, h_onset = impulse(system, T=t)
+        h_onset *= ampl_onset
     
-    a = 1/duration
-    omega = 2*np.pi*freq
-    # Create the transfer function system of the sound
-    b, a = zpk2tf([], [-a-1j*omega, -a+1j*omega], omega)
-    system = TransferFunction(b, a)
-    # Time array (from 0 to duration with step size of 1/Fs)
-    t = np.linspace(0, duration, int(Fs * duration))
-    # Impulse response (time domain)
-    t_beat, h_beat = impulse(system, T=t)
+    if duration_main > 0:
+        omega_main = 2*np.pi*freq_main
+        # Create the transfer function system of the sound
+        b, a = zpk2tf([], [a_main-1j*omega_main, a_main+1j*omega_main], omega_main)
+        system = TransferFunction(b, a)
+        # Time array (from 0 to duration with step size of 1/Fs)
+        t = np.linspace(0, duration_main, int(Fs * duration_main))
+        # Impulse response (time domain)
+        t_main, h_main = impulse(system, T=t)
+        h_main *= ampl_main
     
     
     # Assemble reponse
     samples_delay = int(Fs * delay)
-    h_out = ampl*np.concatenate([np.zeros(samples_delay), ([] if onset <= 0 else onset_ampl*h_onset), h_beat])
-    t_out = np.linspace(0, delay+duration+onset, len(h_out))
+    h_out = np.concatenate([np.zeros(samples_delay), ([] if duration_onset <= 0 else h_onset), ([] if duration_main <= 0 else h_main)])
+    t_out = np.linspace(0, delay+duration_main+duration_onset, len(h_out))
     
     return t_out, h_out
 

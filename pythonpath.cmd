@@ -1,5 +1,5 @@
 @ECHO OFF
 setlocal
-set PYTHONPATH=%1
-python %2
+set PYTHONPATH=%cd%
+python %1
 endlocal
