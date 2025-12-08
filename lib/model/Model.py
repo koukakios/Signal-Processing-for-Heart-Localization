@@ -176,6 +176,14 @@ class Model:
         except:
             print("An exception occured while loading the second part of the model section")
             return
+        
+    def set_n(self, n: int) -> None:
+        """Sets the amount of beats to a higher value
+
+        Args:
+            n (int): The amount of beats to generate
+        """
+        self.n = n
     
     def generate_csv(self) -> str:
         """Generate the csv string for the params of the model.
