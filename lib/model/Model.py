@@ -66,8 +66,11 @@ class Model:
         
         write(join(self.sounds_path, f"Advanced-{self.Fs}Hz-{self.BPM}BPM-{self.n} beats.wav"), self.Fs, h_model)
     
-    def generate_model(self) -> Tuple[np.ndarray, np.ndarray]:
+    def generate_model(self, randomize_enabled: bool = False) -> Tuple[np.ndarray, np.ndarray]:
         """Generates the model time and amplitude axis.
+
+        Args:
+            randomize_enabled (bool): Whether to add random noise in the generated model
 
         Returns:
             Tuple[np.ndarray, np.ndarray]: t_model (the time axis), h_model (the amplitude axis).
@@ -80,18 +83,19 @@ class Model:
             self.order,
             self.size,
             self.valves,
-            self.n
+            self.n, 
+            randomize_enabled=randomize_enabled
         ) 
         
         return t_model, h_model
     
-    def generate_model_and_freq(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def generate_model_and_freq(self, randomize_enabled: bool = False) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """Generates the model time, amplitude and frequency axis.
 
         Returns:
             Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: t_model (the time axis), h_model (the amplitude axis), freq (the frequency axis), H (the frequency amplitude spectrum)
         """
-        t_model, h_model = self.generate_model()
+        t_model, h_model = self.generate_model(randomize_enabled=randomize_enabled)
         
         H = fftshift(fft(h_model))
         H = H/np.max(np.abs(H))

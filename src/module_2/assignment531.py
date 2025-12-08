@@ -1,8 +1,7 @@
 import numpy as np
 from lib.config.ConfigParser import ConfigParser
-from src.module_2.plot import Plot
 from copy import deepcopy
-from src.module_2.generateSounds import generateSounds
+from lib.model.Model import Model
 import matplotlib.pyplot as plt
 from src.module_2.generate import *
 
@@ -43,15 +42,17 @@ def log(msg):
 def threeD_model():
     config = ConfigParser()
     
-    plot = Plot("", config, log_enabled=False, disable_orignal=True)
-    plot.import_csv(".\\src\\module_2\\quite_good_params.csv", run_plot=False)
-    valves = plot.valves
-    del plot
+    model = Model(config)
+    model.import_csv(".\\src\\module_2\\quite_good_params.csv")
+    model.set_n(config.HeartSoundModel.NBeats)
+    
+    valves = model.valves
     
     valves_init = np.array([valve.num_values() for valve in valves])
     
     signals = []
-    Fs = None
+    Fs = config.HeartSoundModel.Fs
+
     
     for mic_loc in mic_locs:
         valves = deepcopy(valves_init)
@@ -90,15 +91,15 @@ def threeD_model():
             ) for valve in valves
         ]
         
-        signal, Fs_this = generateSounds(config, valvesParams, write_enabled = False, randomize = True)
-        Fs = Fs or Fs_this
+        model.valves = valvesParams
+        
+        _, signal = model.generate_model(randomize_enabled=True)
         
         signals.append(signal)
         
     return signals, Fs
 
 def plot(signals, Fs):
-    plt.ioff()
     for i, signal in enumerate(signals):
         t = np.linspace(0, len(signal)/Fs, len(signal))
         plt.plot(t, signal, label=f"Mic {i}")
