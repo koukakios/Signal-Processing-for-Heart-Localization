@@ -6,7 +6,7 @@ def generateStandardCommands(plot: Plot) -> CommandProcessor:
     
     cp.register_command("reset", plot.reset, helpmsg="Reset the values to initial values")
     cp.register_command("print", plot.print, helpmsg="Print the set values")
-    cp.register_command("export_text", plot.export_text, args=["file"], helpmsg="Export all the values to a file in readable format")
+    cp.register_command("export_text", plot.export_readable, args=["file"], helpmsg="Export all the values to a file in readable format")
     cp.register_command("export_csv", plot.export_csv, args=["file"], helpmsg="Export all the values to a file in csv format")
     cp.register_command("import_csv", plot.import_csv, args=["file"], helpmsg="Import all the values from a file in csv format")
     cp.register_command("order", plot.print_order, helpmsg="Print the standard order of the valves")
@@ -22,12 +22,12 @@ def generateStandardCommands(plot: Plot) -> CommandProcessor:
     general_group = cp.register_symbolic_group("General", "Contains specs and props for general purposes")
     cp.register_symbolic_spec("G", general_group, lambda: plot, "General settings on the plot object")
     
-    cp.register_symbolic_prop("BPM", general_group, lambda obj: obj.BPM, lambda obj, val: setattr(obj, "BPM", val), dtype=int, helpmsg="The BPM of the heart signal")
-    cp.register_symbolic_prop("shift", general_group, lambda obj: obj.shift, lambda obj, val: setattr(obj, "shift", val), dtype=float, helpmsg="The BPM of the heart signal")
-    cp.register_symbolic_prop("n", general_group, lambda obj: obj.n, lambda obj, val: setattr(obj, "n", val), dtype=int, helpmsg="The amount of times the signal is repeated")
+    cp.register_symbolic_prop("BPM", general_group, lambda obj: obj.model.BPM, lambda obj, val: setattr(obj, "BPM", val), dtype=int, helpmsg="The BPM of the heart signal")
+    cp.register_symbolic_prop("shift", general_group, lambda obj: obj.originalSound.shift, lambda obj, val: setattr(obj, "shift", val), dtype=float, helpmsg="The BPM of the heart signal")
+    cp.register_symbolic_prop("n", general_group, lambda obj: obj.model.n, lambda obj, val: setattr(obj, "n", val), dtype=int, helpmsg="The amount of times the signal is repeated")
     
     valve_group = cp.register_symbolic_group("Valves", "Contains specs and props for the valves. Order: M, T, A, P")
-    for valve in plot.valves:
+    for valve in plot.model.valves:
         cp.register_symbolic_spec(valve.name, valve_group, lambda v=valve: v, helpmsg=f"The {valve.name} peak")
         
     cp.register_symbolic_prop("delay", valve_group, lambda obj: obj.delay * 1000, lambda obj, val: setattr(obj, "delay", val/1000), dtype=float, helpmsg="The delay before the valve sound starts in ms")
