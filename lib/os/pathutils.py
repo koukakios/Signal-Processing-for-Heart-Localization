@@ -1,4 +1,5 @@
 from os import listdir
+from pathlib import Path
 
 def getFilesExt(ext:str, dir:str="."):
     """Gets files in a certain directory with a certain extension
@@ -11,3 +12,6 @@ def getFilesExt(ext:str, dir:str="."):
         list: A list of the filenames in the directory that end with the given extension.
     """
     return [file for file in listdir(dir) if file.endswith(ext)] 
+
+def ensurePathExists(path: str | Path):
+    Path(path).mkdir(parents=True, exist_ok=True)

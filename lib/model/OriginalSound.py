@@ -1,0 +1,152 @@
+from pathlib import Path
+import io
+import csv
+from scipy.fft import fft, fftshift
+from typing import Tuple
+import numpy as np
+
+from lib.processing.Processor import Processor
+from lib.general.pathUtils import *
+from lib.config.ConfigParser import ConfigParser
+
+class OriginalSound:
+    def __init__(self, file_path: str|Path, config: ConfigParser):
+        """Initialize a wrapper for the original sound.
+
+        Args:
+            config (ConfigParser): The config object.
+        """
+        file_path = Path(file_path)
+        if not file_path.exists():
+            print(f"{file_path} can not be found")
+            return
+            
+        self.config = config
+        self.shift = self.shift_init = -2.28
+        self.file_path = file_path
+        
+        self.original_length = None
+        self.original_Fs = None
+        
+    def reset(self) -> None:
+        """Reset the original sound to the initial values.
+        """
+        self.shift = self.shift_init
+        
+    def get_sound_init(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Get all the properties of the origninal sound, including the frequency spectrum.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray, np.ndarray]: y_normalized (the amplitude axis), freq (the frequency axis), Y (the frequency amplitude spectrum)
+        """
+        processor = Processor(self.file_path.resolve(), self.config, save_steps=True, write_result_processed=False, write_result_raw=False)
+        processor.process()
+        
+        self.original_length = len(processor.y_normalized)
+        self.original_Fs = processor.Fs_target
+        
+        Y = fftshift(fft(processor.y_normalized))
+        Y = Y/np.max(np.abs(Y))
+        freq = np.linspace(-processor.Fs_target/2, processor.Fs_target/2, len(Y))
+        
+        return processor.y_normalized, freq, Y
+    
+    def get_time(self) -> np.ndarray:
+        """Get the time axis of the original sound.
+
+        Returns:
+            np.ndarray: The time axis.
+        """
+        return np.linspace(self.shift, self.shift+self.original_length/self.original_Fs, self.original_length)
+
+    
+    def generate_summary(self) -> str:
+        """Generate a readable summary of the original sound params.
+
+        Returns:
+            str: The summary.
+        """
+        return f"Original:\n  - File: {self.file_path.stem}\n  e- Shift: {self.shift}"
+    
+    def import_csv(self, file_path: str|Path) -> None:
+        """Import the original sound params from a csv file.
+
+        Args:
+            file_path (str | Path): The path to the csv file.
+        """
+        file_path = Path(file_path)
+        if not file_path.exists():
+            print(f"{file_path} can not be found")
+            return
+
+        with open(file_path, newline='') as f:
+            self.import_csv_s(f.read())
+        
+    def import_csv_s(self, contents: str) -> None:
+        """Import the original sound params from a csv string.
+
+        Args:
+            contents (str): The csv in a string.
+        """
+        # Filter the contents to only contain the correct information (Between 'Model:' and another line ending with ":"/EOF)
+        filtered_contents = ""
+        correct_section = False
+        for line in contents.split("\n"):
+            line = line.strip()
+            if line == "OriginalSound:" and not correct_section:
+                correct_section = True
+                continue
+            elif line.endswith(":") and correct_section:
+                break
+            elif correct_section:
+                filtered_contents += line + "\n"
+        
+        
+        file = io.StringIO(filtered_contents)
+
+        reader = csv.reader(file)
+            
+        # Load first part
+        header = next(reader)
+        values = next(reader)
+        try:
+            if len(values) != 1 and header != ["shift"]:
+                print(f"OriginalSound: Values is not as long as expected (expected: 1, actual: {len(values)}) or the header is wrong. Maybe the csv is from an older version. Header: {header}, Values: {values}")
+            
+            self.shift = float(values[0])
+        except:
+            print("An exception occured while loading the first part of the OriginalSound section")
+            return
+
+    
+    def generate_csv(self) -> str:
+        """Generate the csv string for the params of the original sound.
+
+        Returns:
+            str: The generated csv string.
+        """
+        contents = [["OriginalSound:"], ["shift"],[str(self.shift)]]
+        
+        return "\n".join([",".join(c) for c in contents])
+    
+    def export_csv(self, file_path: str|Path) -> None:
+        """Export the params of the original sound to a csv file.
+
+        Args:
+            file_path (str | Path): The path to the csv file to export to.
+        """
+        ensure_path_exists(file_path)
+                
+        with open(file_path, "w") as fp:
+            fp.write(self.generate_csv())
+            
+    def export_readable(self, file_path: str|Path) -> None:
+        """Export the readable summary to a file.
+
+        Args:
+            file_path (str | Path): The path to the file to export to.
+        """
+        ensure_path_exists(file_path)
+        
+        with open(file_path, "w") as fp:
+            fp.write(self.generate_summary())
