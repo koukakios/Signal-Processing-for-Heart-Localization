@@ -26,7 +26,7 @@ def a_lin(theta, M, d, v, f0):
         np.ndarray: The array response
     """  
     """okay"""
-    result = np.array([ np.exp(-1*mic*(d/v)*np.sin(theta*np.pi/180)*2*np.pi*f0 *1j) for mic in range (M)])
+    result = np.array([ np.exp(-1*mic*(d/v) * np.sin(theta*np.pi/180)*2* np.pi*f0 *1j) for mic in range (M)])
 
     return result
 

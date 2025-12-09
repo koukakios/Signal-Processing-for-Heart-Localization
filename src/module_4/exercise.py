@@ -35,12 +35,9 @@ def generate_source(N):
     
     return s_normalized
 
-def datamodel (M, N, theta0):
+def datamodel (M, N, theta0, d, v, f0):
     
-    theta = theta0
-    d = 0.1
-    v = 343
-    f0 = 250
+    
 
     A = np.array([a_lin(theta0[i], M, d, v, f0) for i in range (len(theta0)) ] )
     A = np.transpose(A)
@@ -55,7 +52,11 @@ if __name__ == "__main__":
     M = 7
     N = 6
     theta0 = [10,22,11,40,-10,56]
-    X = datamodel(M, N, theta0)
+    d = 0.1
+    v = 343
+    f0 = 250
+
+    X = datamodel(M, N, theta0, d, v, f0)
     rankx = np.linalg.matrix_rank(X)
     print(rankx)
     print (X.shape)
