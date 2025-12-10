@@ -1,10 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from lib.plot.timeFrequencyPlot import *
-from lib.plot.frequencyUtils import getDamping
-from lib.general.generalUtils import todB
 from lib.config.ConfigParser import ConfigParser
-from lib.processing.functions import construct_bandpass_filter
 from lib.processing.Processor import Processor
 
 def result45(config):
@@ -15,7 +11,7 @@ def result45(config):
     path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav"
     processor = Processor(path, config)
     
-    processor.run()
+    processor.process()
     
     fig, ax = plt.subplots(4, 2, figsize=(8,12), constrained_layout=True)
     timeFrequencyPlot(
@@ -92,7 +88,7 @@ def filter45(config):
     path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav"
     processor = Processor(path, config)
     
-    processor.run()
+    processor.process()
 
     fig, ax = plt.subplots(1, 2, figsize=(8,4), constrained_layout=True)
     
@@ -118,6 +114,7 @@ def main():
     """
     config = ConfigParser()
     filter45(config)
+    result45(config)
 
 if __name__ == "__main__":
     main()

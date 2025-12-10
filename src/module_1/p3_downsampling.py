@@ -30,7 +30,7 @@ def assignment432(config: ConfigParser):
     
     processor = Processor(path, config)
     
-    processor.run()
+    processor.preprocess()
     
     fig, ax = plt.subplots(2, 2, figsize=(8,4), constrained_layout=True)
     timeFrequencyPlot(

@@ -38,6 +38,7 @@ class OriginalSound:
         
         self.original_length = None
         self.original_Fs = None
+        self.processor = None
         
     def reset(self) -> None:
         """
@@ -60,17 +61,18 @@ class OriginalSound:
             Tuple[np.ndarray, np.ndarray, np.ndarray]: y_normalized (the amplitude axis), freq (the frequency axis), Y (the frequency amplitude spectrum)
         
         """
-        processor = Processor(self.file_path.resolve(), self.config, write_result_processed=False, write_result_raw=False)
-        processor.run()
+        if self.processor is None or self.processor.y_normalized is None or self.processor.Fs_target is None:
+            self.processor = Processor(self.file_path.resolve(), self.config, write_result_processed=False, write_result_raw=False)
+            self.processor.preprocess()
         
-        self.original_length = len(processor.y_normalized)
-        self.original_Fs = processor.Fs_target
+        self.original_length = len(self.processor.y_normalized)
+        self.original_Fs = self.processor.Fs_target
         
-        Y = fftshift(fft(processor.y_normalized))
+        Y = fftshift(fft(self.processor.y_normalized))
         Y = Y/np.max(np.abs(Y))
-        freq = np.linspace(-processor.Fs_target/2, processor.Fs_target/2, len(Y))
+        freq = np.linspace(-self.processor.Fs_target/2, self.processor.Fs_target/2, len(Y))
         
-        return processor.y_normalized, freq, Y
+        return self.processor.y_normalized, freq, Y
     
     def get_time(self) -> np.ndarray:
         """

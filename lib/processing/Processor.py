@@ -151,6 +151,8 @@ class Processor:
         self.y_normalized = normalize(self.y_downsampled)
         
     def process(self):
+        if self.y_normalized is None:
+            self.preprocess()
         self.log("Calculating Shannon energy...")
         self.y_energy = shannon_energy(self.y_normalized)
         
@@ -275,7 +277,6 @@ class Processor:
         """
         minima = []
         maxima = []
-        uncertain = []
         prev_d = None
         # Get temporary mimima and maxima on difference plot
         for x, d, d2 in peaks:
@@ -284,8 +285,6 @@ class Processor:
                 maxima.append(to_add)
             elif prev_d is not None and d < prev_d and d2 > 0:
                 minima.append(to_add)
-            else:
-                uncertain.append(to_add)
             prev_d = d
                 
         minima = np.array(minima)

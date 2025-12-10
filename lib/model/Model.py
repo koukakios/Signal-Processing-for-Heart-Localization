@@ -121,7 +121,7 @@ class Model:
             self.valves,
             self.n, 
             randomize_enabled=self.randomize_enabled,
-            noise=0.1
+            noise=0.01
         ) 
         
         return t_model, h_model
