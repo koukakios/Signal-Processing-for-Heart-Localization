@@ -6,7 +6,15 @@ import matplotlib.pyplot as plt
 from lib.model.generate import *
 
 class Model_3D:
+    """
+    @author: Gerrald
+    @date: 10-12-2025
+    """        
     def __init__(self, config: ConfigParser, reduce_n: bool = True, log_enabled: bool = False):
+        """
+        @author: Gerrald
+        @date: 10-12-2025
+        """        
         self.valve_locs = np.array([(6.37,10.65,6.00), # M
               (0.94,9.57,5.5), # T
               (5.5,11.00,3.6), # A
