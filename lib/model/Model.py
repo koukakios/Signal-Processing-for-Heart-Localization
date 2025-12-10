@@ -15,8 +15,10 @@ class Model:
     """
     @author: Gerrald
     @date: 10-12-2025
+    
+    Wrapper for the original sound to make it easier to plot it.
     """
-    def __init__(self, config: ConfigParser, randomize_enabled: bool = False):
+    def __init__(self, config: ConfigParser, randomize_enabled: bool = False) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -149,6 +151,7 @@ class Model:
         @date: 10-12-2025
 
         Import the model from a csv file.
+        Only considers the section between `Model:` and the next `:`
 
         Args:
             file_path (str | Path): The path to the csv file.
@@ -168,6 +171,7 @@ class Model:
         @date: 10-12-2025
 
         Import the model from a csv string.
+        Only considers the section between `Model:` and the next `:`
 
         Args:
             contents (str): The csv in a string.
@@ -236,10 +240,10 @@ class Model:
         @author: Gerrald
         @date: 10-12-2025
 
-        Sets the amount of beats to a higher value
+        Sets the amount of beats to a different value.
 
         Args:
-            n (int): The amount of beats to generate
+            n (int): The amount of beats to generate.
         
         """
         self.n = n

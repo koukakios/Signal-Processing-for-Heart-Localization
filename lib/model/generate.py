@@ -1,100 +1,54 @@
 from scipy.signal import TransferFunction, impulse, zpk2tf
+from typing import Tuple
 import numpy as np
-from lib.model.generate import *
+
+from lib.model.ValveParams import ValveParams
 from lib.config.ConfigParser import ConfigParser
 from lib.processing.functions import construct_bandpass_filter, apply_filter
-from random import random
+from lib.general.generalUtils import randomize
 
-class ValveParams:
-    """
-    @author: Gerrald
-    @date: 10-12-2025
-    """
-    def __init__(self, delay_ms:float, duration_total_ms: float, duration_onset_ms:float, a_onset: float, a_main: float, 
-                         ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, name: str=None):
-        """
-        @author: Gerrald
-        @date: 10-12-2025
-        """
-        self.delay = delay_ms / 1000
-        self.duration_total = duration_total_ms / 1000
-        self.duration_onset = duration_onset_ms / 1000
-        self.a_onset = a_onset
-        self.a_main = a_main
-        self.ampl_onset = ampl_onset
-        self.ampl_main = ampl_main
-        self.freq_onset = freq_onset
-        self.freq_main = freq_main
-
-        self.name = name
-    def toStr(self):
-        """
-        @author: Gerrald
-        @date: 10-12-2025
-        """
-        return [
-            f"Name: {self.name}",
-            f"  Delay: {self.delay*1000}ms",
-            f"  Total duration: {self.duration_total*1000}ms",
-            f"  Duration onset: {self.duration_onset*1000}ms",
-            f"  A onset: {self.a_onset}",
-            f"  A main: {self.a_main}",
-            f"  Ampl onset: {self.ampl_onset}",
-            f"  Ampl main: {self.ampl_main}",
-            f"  Freq onset: {self.freq_onset}Hz",
-            f"  Freq main: {self.freq_main}Hz",
-        ]
-    def properties(self):
-        """
-        @author: Gerrald
-        @date: 10-12-2025
-        """
-        return "name,delay,duration_total,duration_onset,a_onset,a_main,ampl_onset,ampl_main,freq_onset,freq_main"
-    def values_str(self):
-        """
-        @author: Gerrald
-        @date: 10-12-2025
-        """
-        return list(map(str, [self.name,self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]))
-    def num_values(self):
-        """
-        @author: Gerrald
-        @date: 10-12-2025
-        """
-        return [self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]
-    def randomize(self, ratio):
-        """
-        @author: Gerrald
-        @date: 10-12-2025
-        """
-        self.delay = randomize(self.delay, ratio)
-        self.duration_total = randomize(self.duration_total, ratio)
-        self.duration_onset = randomize(self.duration_onset, ratio)
-        self.a_onset = randomize(self.a_onset, ratio)
-        self.a_main = randomize(self.a_main, ratio)
-        self.ampl_onset = randomize(self.ampl_onset, ratio)
-        self.ampl_main = randomize(self.ampl_main, ratio)
-        self.freq_onset = randomize(self.freq_onset, ratio)
-        self.freq_main = randomize(self.freq_main, ratio)
 
 def advanced_model_valve_params(params: ValveParams, Fs:int):
     """
     @author: Gerrald
     @date: 10-12-2025
-    """
+    
+    Wrapper for the advanced_model_valve function to make calls less verbose.
+
+    Args:
+        params (ValveParams): The parameters of the valve to simulate.
+        Fs (int): The sampling frequency of the (virtual) microphone in Hz.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: t_model, h_model
+    """    
     return advanced_model_valve(delay = params.delay, duration_total = params.duration_total, duration_onset = params.duration_onset, 
                                 a_onset = params.a_onset, a_main = params.a_main, ampl_onset = params.ampl_onset,  
                                 ampl_main = params.ampl_main, freq_onset = params.freq_onset, freq_main = params.freq_main, Fs = Fs)
 
 def advanced_model_valve(delay:float, duration_total: float, duration_onset:float, a_onset: float, a_main: float, 
-                         ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, Fs:int):
-    # a_onset = 10
-    # ampl_onset = 0.1
-    # freq_onset = freq_main
-    """
+                         ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, Fs:int) -> Tuple[np.ndarray, np.ndarray]:
+    """    
     @author: Gerrald
     @date: 10-12-2025
-    """
+    
+    Models a single valve for a single beat with the given parameters.
+
+    Args:
+        delay (float): The delay till the sound starts in s.
+        duration_total (float): The total duration (including onset) of the sound in s.
+        duration_onset (float): The duration of the onset of the sound in s.
+        a_onset (float): The gain of the onset. Negative means dampened amplitude, positive exploding amplitude.
+        a_main (float): The gain of the main part of the sound. Negative means dampened amplitude, positive exploding amplitude.
+        ampl_onset (float): The amplitude of the onset.
+        ampl_main (float): The amplitude of the main part.
+        freq_onset (float): The frequency of the onset in Hz.
+        freq_main (float): The frequency of the main part in Hz.
+        Fs (int): The sampling frequency of the (virtual) microphone in Hz.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: t_model, h_model
+    """    
     duration_main = duration_total - duration_onset if duration_total >= duration_onset else 0
     
     if duration_onset > 0:
@@ -128,12 +82,25 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
     
     return t_out, h_out
 
-def advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves):
-    # Generate sounds of single valves
+def advanced_model_single_beat(Fs: int, BPM: int, lf: float, hf: float, order: int, size: int, valves: list[ValveParams]) -> Tuple[np.ndarray, np.ndarray]:
     """
     @author: Gerrald
     @date: 10-12-2025
-    """
+    
+    Assemble different valve sounds to produce one single heart beat.
+
+    Args:
+        Fs (int): The sampling frequency of the (virtual) microphone in Hz.
+        BPM (int): The BPM of the simulated heart
+        lf (float): The lower frequency of the bandpass filter that is used to filter the heartsound in preprocessing in Hz.
+        hf (float): The upper frequency of the bandpass filter that is used to filter the heartsound in preprocessing in Hz.
+        order (int): The order of the bandpass filter.
+        size (int): The length of the bandpass filter.
+        valves (list[ValveParams]): A list of the valve parameters.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: t_model, h_model
+    """    
     t_out = []
     h_out = []
     for valve in valves:
@@ -167,10 +134,30 @@ def advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves):
     
     return t_filtered, h_filtered
 
-def advanced_model(Fs, BPM, lf, hf, order, size, valves, n, randomize_enabled: bool = False, r_ratio: float = 0, bpm_ratio: float = 0, noise: float = 0):
+def advanced_model(Fs: int, BPM: int, lf: float, hf: float, order: int, size: int, valves: list[ValveParams], n: int, 
+                   randomize_enabled: bool = False, r_ratio: float = 0, bpm_ratio: float = 0, noise: float = 0) -> Tuple[np.ndarray, np.ndarray]:
     """
     @author: Gerrald
     @date: 10-12-2025
+    
+    Assemble different valve sounds to produce n heart beats.
+
+    Args:
+        Fs (int): The sampling frequency of the (virtual) microphone in Hz.
+        BPM (int): The BPM of the simulated heart
+        lf (float): The lower frequency of the bandpass filter that is used to filter the heartsound in preprocessing in Hz.
+        hf (float): The upper frequency of the bandpass filter that is used to filter the heartsound in preprocessing in Hz.
+        order (int): The order of the bandpass filter.
+        size (int): The length of the bandpass filter.
+        valves (list[ValveParams]): A list of the valve parameters.
+        n (int): The amount of beats.
+        randomize_enabled (bool, optional): Whether to randomize the parameters a bit. Defaults to False.
+        r_ratio (float, optional): How much to randomize each valve parameter. Defaults to 0.
+        bpm_ratio (float, optional): How much to randomize the BPM. Defaults to 0.
+        noise (float, optional): How much noise there is. Defaults to 0.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: t_model, h_model
     """
     if not randomize_enabled:
         t_filtered, h_filtered = advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves)
@@ -198,18 +185,25 @@ def advanced_model(Fs, BPM, lf, hf, order, size, valves, n, randomize_enabled: b
         t_full = np.linspace(0, len(h_full)/Fs, len(h_full))
         return t_full, h_full
         
-def randomize(val, ratio):
-    """
-    @author: Gerrald
-    @date: 10-12-2025
-    """
-    return val * (1 + ratio * random())
 
-def repeat(n, h_filtered, t_filtered, Fs, length):
+
+def repeat(n: int, h_filtered: np.ndarray, t_filtered: np.ndarray, Fs: int, length: int) -> Tuple[np.ndarray, np.ndarray]:
     """
     @author: Gerrald
     @date: 10-12-2025
-    """
+    
+    Repeat h_filtered n times with a length of length for each h_filtered.
+
+    Args:
+        n (int): The amount of times to repeat h_filtered.
+        h_filtered (np.ndarray): The amplitude axis of the model.
+        t_filtered (np.ndarray): The time axis of the model.
+        Fs (int): The sampling frequency in Hz.
+        length (int): How much space each h_filtered should take up.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: t_model, h_model
+    """    
     h_full = np.zeros(length * n + max(0, len(h_filtered) - length))
     for i in range(0, n * length, length):
         h_full[i:i+len(h_filtered)] += h_filtered

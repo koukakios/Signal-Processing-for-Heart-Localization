@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
-
+import matplotlib
+matplotlib.use("Agg")
 from src.module_1.p3_downsampling import *
 
 class TestGenerate(unittest.TestCase):
@@ -14,5 +15,5 @@ class TestGenerate(unittest.TestCase):
         @date: 10-12-2025
         """
         config = ConfigParser()
-        assignment431(config)
+        assignment431()
         assignment432(config)

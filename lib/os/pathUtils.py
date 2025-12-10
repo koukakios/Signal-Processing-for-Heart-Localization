@@ -1,7 +1,7 @@
 from os import listdir
 from pathlib import Path
 
-def get_files_ext(ext:str, dir:str="."):
+def get_files_ext(ext:str, dir:str=".") -> list:
     """
     @author: Gerrald
     @date: 10-12-2025
@@ -18,7 +18,7 @@ def get_files_ext(ext:str, dir:str="."):
     """
     return [file for file in listdir(dir) if file.endswith(ext)] 
     
-def ensure_path_exists(file_path: Path|str, is_parent: bool = False):
+def ensure_path_exists(file_path: Path|str, is_parent: bool = False) -> None:
     """
     @author: Gerrald
     @date: 10-12-2025

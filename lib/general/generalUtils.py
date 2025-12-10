@@ -1,6 +1,7 @@
 import numpy as np
+from random import random
 
-def todB(value: float|list|np.ndarray, power: bool = False):
+def todB(value: float|list|np.ndarray, power: bool = False) -> float | list | np.ndarray:
     """
     @author: Gerrald
     @date: 10-12-2025
@@ -17,7 +18,7 @@ def todB(value: float|list|np.ndarray, power: bool = False):
     """
     return 10 * np.log10(value) * (1 if power else 2)
     
-def fromdB(dB: float|list|np.ndarray, power: bool = False):
+def fromdB(dB: float|list|np.ndarray, power: bool = False) -> float | list | np.ndarray:
     """
     @author: Gerrald
     @date: 10-12-2025
@@ -33,3 +34,19 @@ def fromdB(dB: float|list|np.ndarray, power: bool = False):
     
     """
     return 10 ** (dB / (10 if power else 20))
+
+def randomize(val: float, ratio: float) -> float:
+    """
+    @author: Gerrald
+    @date: 10-12-2025
+    
+    Randomize a value.
+
+    Args:
+        val (float): The value to randomize
+        ratio (float): The max random component in ratio of the value.
+
+    Returns:
+        float: The randomized value.
+    """
+    return val * (1 + ratio * random())

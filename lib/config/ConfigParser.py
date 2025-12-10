@@ -1,5 +1,7 @@
 import re
 from pathlib import Path
+from typing import Iterable
+
 from lib.config.ConfigDefaults import *
 from lib.config.AttrSection import AttrSection
 
@@ -23,7 +25,7 @@ class ConfigParser:
     
     """
     
-    def __init__(self, path: Path|str= CONFIG_PATH):
+    def __init__(self, path: Path|str = CONFIG_PATH) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -52,7 +54,7 @@ class ConfigParser:
         for section in self.sections():
             setattr(self, section, AttrSection(section, self.config))
             
-    def read(self):
+    def read(self) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -98,7 +100,7 @@ class ConfigParser:
                 else:
                     print(f"WARNING: did not recognize {line}, skipping")
                     
-    def write(self):
+    def write(self) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -128,7 +130,7 @@ class ConfigParser:
                     fp.write(f"{key} = {value}\n")
                 fp.write("\n")
                 
-    def _create_default(self):
+    def _create_default(self) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -144,7 +146,7 @@ class ConfigParser:
         self.config = DEFAULT_CONFIG
         self.write()
         
-    def sections(self):
+    def sections(self) -> Iterable[str]:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -157,7 +159,7 @@ class ConfigParser:
         """
         return self.config.keys()
     
-    def addComment(self, section, comment):
+    def addComment(self, section: str, comment: str) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -173,7 +175,7 @@ class ConfigParser:
             self.comments[section] = []
         self.comments[section].append(comment)
         
-    def addSection(self, section):
+    def addSection(self, section: str) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -190,7 +192,7 @@ class ConfigParser:
         if section not in self.config:
             self.config[section] = {}
             
-    def addAttribute(self, section, key, value):
+    def addAttribute(self, section: str, key: str, value: str) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -199,9 +201,9 @@ class ConfigParser:
 
         The method attempts to detect numeric types:
 
-            - Integer   → converted using int()
-            - Float     → converted using float()
-            - Otherwise → stored as a string
+            - Integer   -> converted using int()
+            - Float     -> converted using float()
+            - Otherwise -> stored as a string
 
         Args:
             section (str): The section to modify.

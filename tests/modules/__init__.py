@@ -1,0 +1,1 @@
+# __init__.py - Leave empty, is here to be able to create tests

@@ -13,8 +13,10 @@ class OriginalSound:
     """
     @author: Gerrald
     @date: 10-12-2025
+    
+    Wrapper for the original sound to make it easier to plot it.
     """
-    def __init__(self, file_path: str|Path, config: ConfigParser):
+    def __init__(self, file_path: str|Path, config: ConfigParser) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -102,7 +104,8 @@ class OriginalSound:
         @author: Gerrald
         @date: 10-12-2025
 
-        Import the original sound params from a csv file.
+        Import the original sound params from a csv file. 
+        Only considers the section between `OriginalSound:` and the next `:`
 
         Args:
             file_path (str | Path): The path to the csv file.
@@ -122,6 +125,7 @@ class OriginalSound:
         @date: 10-12-2025
 
         Import the original sound params from a csv string.
+        Only considers the section between `OriginalSound:` and the next `:`
 
         Args:
             contents (str): The csv in a string.

@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
-
+import matplotlib
+matplotlib.use("Agg")
 from src.module_1.p2_lp_filtering import *
 
 class TestGenerate(unittest.TestCase):

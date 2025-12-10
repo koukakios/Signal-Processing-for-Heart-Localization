@@ -1,3 +1,5 @@
+from typing import Any
+
 class AttrSection:
     """
     @author: Gerrald
@@ -14,7 +16,7 @@ class AttrSection:
     to the configuration dictionary.
     """
     
-    def __init__(self, section_name: str, config: dict):
+    def __init__(self, section_name: str, config: dict) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -29,7 +31,7 @@ class AttrSection:
         self._section = section_name
         self._config = config
         
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -49,7 +51,7 @@ class AttrSection:
             return self._config[self._section][name]
         raise AttributeError(f"No such field '{name}' in section '{self._section}'")
     
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: Any) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -70,7 +72,7 @@ class AttrSection:
         else:
             self._config[self._section][name] = str(value)
             
-    def keys(self):
+    def keys(self) -> list[str]:
         """
         @author: Gerrald
         @date: 10-12-2025
