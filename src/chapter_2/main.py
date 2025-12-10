@@ -9,7 +9,8 @@ import numpy as np
 
 def plot_pcg(file: str, time_ax: axes.Axes, freq_ax: axes.Axes, title:str=None):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     _summary_
 
@@ -42,7 +43,8 @@ def plot_pcg(file: str, time_ax: axes.Axes, freq_ax: axes.Axes, title:str=None):
 
 def main(pcg_dir: str = "./samples/chapter_2/", csv_data_file: str = None):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Creates plots of the signal and its frequency spectrum based on the files in pcg_dir
 

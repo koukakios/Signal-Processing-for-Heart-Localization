@@ -3,7 +3,8 @@ from pathlib import Path
 
 def get_files_ext(ext:str, dir:str="."):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Gets files in a certain directory with a certain extension.
 
@@ -19,7 +20,8 @@ def get_files_ext(ext:str, dir:str="."):
     
 def ensure_path_exists(file_path: Path|str, is_parent: bool = False):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Make sure the path to a file/folder exists.
 

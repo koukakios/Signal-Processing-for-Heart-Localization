@@ -9,7 +9,8 @@ from lib.processing.Processor import Processor
 
 def assignment422(config: ConfigParser, Fs: int=48e3):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Executes assignment 4.2.2.
 
@@ -43,7 +44,8 @@ def assignment422(config: ConfigParser, Fs: int=48e3):
     
 def assignment423(config: ConfigParser):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Executes assignment 4.2.3.
 
@@ -85,7 +87,8 @@ def assignment423(config: ConfigParser):
     
 def main():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     The main loop. Can be changed to choose whether to run assignment 4.2.2 or 4.2.3.
     

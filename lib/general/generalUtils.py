@@ -2,7 +2,8 @@ import numpy as np
 
 def todB(value: float|list|np.ndarray, power: bool = False):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Convert a value from linear to dB.
 
@@ -18,7 +19,8 @@ def todB(value: float|list|np.ndarray, power: bool = False):
     
 def fromdB(dB: float|list|np.ndarray, power: bool = False):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Convert a value from dB to linear.
 

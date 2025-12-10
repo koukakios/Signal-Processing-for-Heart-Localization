@@ -12,11 +12,13 @@ from src.module_2.cli import CLI
 
 class ParamMatcher:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def __init__(self, path: str, config: ConfigParser):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.cmd_queue = queue.Queue()
         self.stop_event = threading.Event()
@@ -31,7 +33,8 @@ class ParamMatcher:
         
     def run(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.plot.plot_init()
         self.cli.run()
@@ -58,7 +61,8 @@ class ParamMatcher:
     # Process commands every tick of the timer
     def on_timer_tick(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         try:
             while not self.stop_event.is_set():
@@ -76,7 +80,8 @@ class ParamMatcher:
         
 def main():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     paths = [
         ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav",

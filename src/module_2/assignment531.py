@@ -37,14 +37,16 @@ mic_locs = np.array([(2.5, 5, 0), # 0
 
 def log(msg):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     if False:
         print(msg)
 
 def threeD_model():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     config = ConfigParser()
     
@@ -108,7 +110,8 @@ def threeD_model():
 
 def plot(signals, Fs):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     for i, signal in enumerate(signals):
         t = np.linspace(0, len(signal)/Fs, len(signal))

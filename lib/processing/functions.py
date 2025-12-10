@@ -4,7 +4,8 @@ from math import floor
 
 def construct_bandpass_filter(low: float, high: float, Fs: int, order: int = 2, size: int = 2000):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Construct a bandpass non-causal Butterworth filter with a phase of 0.
 
@@ -27,7 +28,8 @@ def construct_bandpass_filter(low: float, high: float, Fs: int, order: int = 2, 
 
 def construct_lowpass_filter(fc: float, Fs: int, order: int = 2, size: int = 2000):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Construct a lowpass non-causal Butterworth filter with a phase of 0.
 
@@ -49,7 +51,8 @@ def construct_lowpass_filter(fc: float, Fs: int, order: int = 2, size: int = 200
 
 def apply_filter(x: list|np.ndarray, g: list|np.ndarray):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Filter x through g by convolution.
 
@@ -65,7 +68,8 @@ def apply_filter(x: list|np.ndarray, g: list|np.ndarray):
 
 def downsample(x: list|np.ndarray, Fs_original:int, Fs_target: int):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Downsample x from Fs_original Hz to Fs_target Hz. Only possible if Fs_original is a multiple of Fs_target.
 
@@ -94,7 +98,8 @@ def downsample(x: list|np.ndarray, Fs_original:int, Fs_target: int):
 
 def normalize(x: np.ndarray, mode: str="max"):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Returns the normalized input signal.
 
@@ -116,7 +121,8 @@ def normalize(x: np.ndarray, mode: str="max"):
 
 def shannon_energy(x: np.ndarray):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Returns the Shannon energy of a normalized signal
 

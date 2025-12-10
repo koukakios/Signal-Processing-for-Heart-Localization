@@ -8,12 +8,14 @@ from time import sleep
 
 class CLI:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def __init__(self, cmd_queue: "queue.Queue[str]", stop_event: threading.Event, executing_event: threading.Event, cancelled_event: threading.Event,
                  autocompletion_dict: dict|None = None):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.cmd_queue = cmd_queue
         self.stop_event = stop_event
@@ -24,7 +26,8 @@ class CLI:
     
     def cli(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         session = PromptSession(history=InMemoryHistory())
         print("CLI thread started. Type 'help' for commands. Use arrow keys for history.")
@@ -61,26 +64,30 @@ class CLI:
             
     def set_autocompletion_dict(self, autocompletion_dict: dict):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.completer = NestedCompleter.from_nested_dict(autocompletion_dict)
             
     def exit(self, put_cmd=True):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.stop_event.set()
         self.cmd_queue.put("exit")
         return
     def run(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.t = threading.Thread(target=self.cli, daemon=True)
         self.t.start()
     def close(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.exit(put_cmd=False)
         self.t.join(timeout=1.0)

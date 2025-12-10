@@ -13,11 +13,13 @@ from lib.os.pathUtils import *
 
 class Model:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def __init__(self, config: ConfigParser, randomize_enabled: bool = False):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Initialize a wrapper for the model.
 
@@ -50,7 +52,8 @@ class Model:
         
     def reset(self) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Reset the model to the initial values.
         
@@ -61,7 +64,8 @@ class Model:
     
     def generate_summary(self) -> str:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Generate a readable summary of the model.
 
@@ -77,7 +81,8 @@ class Model:
     
     def save(self, file_path: str|None = None) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Writes the model as a sound file in the path given in the config.
         
@@ -95,7 +100,8 @@ class Model:
     
     def generate_model(self) -> Tuple[np.ndarray, np.ndarray]:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Generates the model time and amplitude axis.
 
@@ -120,7 +126,8 @@ class Model:
     
     def generate_model_and_freq(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Generates the model time, amplitude and frequency axis.
 
@@ -138,7 +145,8 @@ class Model:
     
     def import_csv(self, file_path: str|Path) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Import the model from a csv file.
 
@@ -156,7 +164,8 @@ class Model:
         
     def import_csv_s(self, contents: str) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Import the model from a csv string.
 
@@ -224,7 +233,8 @@ class Model:
         
     def set_n(self, n: int) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Sets the amount of beats to a higher value
 
@@ -236,7 +246,8 @@ class Model:
     
     def generate_csv(self) -> str:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Generate the csv string for the params of the model.
 
@@ -252,7 +263,8 @@ class Model:
     
     def export_csv(self, file_path: str|Path) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Export the params of the model to a csv file.
 
@@ -267,7 +279,8 @@ class Model:
             
     def export_readable(self, file_path: str|Path) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Export the readable summary to a file.
 

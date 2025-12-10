@@ -14,7 +14,8 @@ def segmentation(config):
     # path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav"
     # path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-05_channel_4.wav"
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     paths = [
         ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav",
@@ -99,7 +100,8 @@ def segmentation(config):
 
 def main():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     The main loop. Can be changed to choose whether to run assignment 4.2.2 or 4.2.3.
     

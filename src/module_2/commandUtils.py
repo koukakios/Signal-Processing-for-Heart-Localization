@@ -3,7 +3,8 @@ from src.module_2.plot import Plot
 
 def generateStandardCommands(plot: Plot) -> CommandProcessor:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     cp = CommandProcessor()
     

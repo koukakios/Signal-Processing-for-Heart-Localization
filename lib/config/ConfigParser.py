@@ -5,7 +5,8 @@ from lib.config.AttrSection import AttrSection
 
 class ConfigParser:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     A minimal INI-like configuration parser with comment preservation
     and attribute-style section access.
@@ -24,7 +25,8 @@ class ConfigParser:
     
     def __init__(self, path: Path|str= CONFIG_PATH):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Initialize a ConfigParser instance.
 
@@ -52,7 +54,8 @@ class ConfigParser:
             
     def read(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Parse the configuration file from disk.
 
@@ -97,7 +100,8 @@ class ConfigParser:
                     
     def write(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Write the current configuration and comments back to disk.
 
@@ -126,7 +130,8 @@ class ConfigParser:
                 
     def _create_default(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Create a default configuration file.
 
@@ -141,7 +146,8 @@ class ConfigParser:
         
     def sections(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Return a list of all section names.
 
@@ -153,7 +159,8 @@ class ConfigParser:
     
     def addComment(self, section, comment):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Attach a comment to the given section.
 
@@ -168,7 +175,8 @@ class ConfigParser:
         
     def addSection(self, section):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Ensure that a section exists in the configuration.
 
@@ -184,7 +192,8 @@ class ConfigParser:
             
     def addAttribute(self, section, key, value):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Add a key/value pair to a section with automatic type inference.
 

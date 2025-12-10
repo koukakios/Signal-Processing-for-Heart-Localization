@@ -9,7 +9,8 @@ from os.path import join, basename, splitext
 
 class Classification(Enum):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     S1 = 0
     S2 = 1
@@ -18,7 +19,8 @@ class Classification(Enum):
 
 class Processor:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Wrapper for the processing stage.
     
@@ -27,7 +29,8 @@ class Processor:
     """
     def __init__(self, file_path: str, config: ConfigParser, subfolder: str = "", save_steps: bool = False, log: bool=True, write_result_processed: bool = True, write_result_raw: bool = True, postprocessing: bool = True):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Initializes the processor.
 
@@ -100,7 +103,8 @@ class Processor:
         self.segmented_s2_raw = None
     def process(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Initialize the processing and optionally save the steps in between.
         
@@ -245,7 +249,8 @@ class Processor:
             
     def classify_peaks(self, x_peaks: np.ndarray, save_y_line: bool = True, save_peaks: bool = True):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         diff = np.diff(x_peaks)
         diff2 = np.diff(diff)
@@ -262,7 +267,8 @@ class Processor:
     
     def analyze_diff2(self, peaks: np.ndarray, save_y_line: bool = True):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         minima = []
         maxima = []
@@ -339,7 +345,8 @@ class Processor:
     
     def solve_uncertains(self, see: np.ndarray, peaks: np.ndarray, s1_peaks: np.ndarray, s2_peaks: np.ndarray, uncertain: np.ndarray, debug_length: float, Fs: int, min_height: float, min_dist: float):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         s1_u = []
         s2_u = []
@@ -438,7 +445,8 @@ class Processor:
         
     def open_file(self, file_path):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         if not Path(file_path).exists():
             raise IOError(f"{file_path} not found")
@@ -475,7 +483,8 @@ class Processor:
     
     def log(self, msg):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         if self.log_enabled:
             print(msg)

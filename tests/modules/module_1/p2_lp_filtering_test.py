@@ -5,11 +5,13 @@ from src.module_1.p2_lp_filtering import *
 
 class TestGenerate(unittest.TestCase):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def test_no_error(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         config = ConfigParser()
         assignment422(config)

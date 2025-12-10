@@ -5,11 +5,13 @@ from lib.model.generate import repeat
 
 class TestGenerate(unittest.TestCase):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def test_set_repeat(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         h_filtered = [3,2,1,0,-1]
         t_filtered = [0,1,2]

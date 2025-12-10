@@ -5,14 +5,16 @@ from typing import Callable
 
 class HeartSound (Enum):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     S1 = 0
     S2 = 1
 
 def get_peaks(x: np.ndarray, min_height: float, min_dist: float):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     peaks, properties = signal.find_peaks(x, height=min_height, distance=min_dist)
 
@@ -20,14 +22,16 @@ def get_peaks(x: np.ndarray, min_height: float, min_dist: float):
 
 def get_dist_peaks_to_next(x_peaks: np.ndarray):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     diff = np.diff(x_peaks)
     return dict(zip(x_peaks[:-1], diff))
 
 def remove_outliers(x: list[tuple[int, int]]):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     x = np.array(x)
     dist = x[:,1]
@@ -46,7 +50,8 @@ def remove_outliers(x: list[tuple[int, int]]):
 
 def analyze_diff2(x_peaks: np.ndarray, diff: np.ndarray, diff2: np.ndarray):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     minima = []
     maxima = []
@@ -72,7 +77,8 @@ def analyze_diff2(x_peaks: np.ndarray, diff: np.ndarray, diff2: np.ndarray):
 
 def classify_peaks(x_peaks: np.ndarray):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     raise NotImplementedError()
     diff = np.diff(x_peaks)
@@ -84,13 +90,15 @@ def classify_peaks(x_peaks: np.ndarray):
 
 def pop_np(x):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     return x[-1], x[:-1]
 
 def get_difference(a,b):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     a_rows = {tuple(row) for row in a}
     b_rows = {tuple(row) for row in b}
@@ -99,7 +107,8 @@ def get_difference(a,b):
 
 def detect_peak_domains(peaks: np.ndarray, see: np.ndarray, threshold: float):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     peak_start = None
     peaks_ind = []
@@ -114,7 +123,8 @@ def detect_peak_domains(peaks: np.ndarray, see: np.ndarray, threshold: float):
 
 def segment_only_with_len_filter_and_thus_deprecated_should_not_be_used(signal: np.ndarray, domains: np.ndarray, len_filter: int):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     mask = np.zeros(len(signal), dtype=bool)
     comp = int(len_filter / 2)
@@ -124,7 +134,8 @@ def segment_only_with_len_filter_and_thus_deprecated_should_not_be_used(signal: 
 
 def segment(signal: np.ndarray, domains: np.ndarray, comp: Callable[[int], int]):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     mask = np.zeros(len(signal), dtype=bool)
     concatenated = []

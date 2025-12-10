@@ -4,11 +4,13 @@ from src.module_2.CommandProcessor import CommandProcessor
 
 class TestCommands(unittest.TestCase):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def setUp(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.BPM = 100
         self.cmd = CommandProcessor()
@@ -19,14 +21,16 @@ class TestCommands(unittest.TestCase):
         
     def test_set_bpm(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.cmd.process_command("G BPM 50")
         self.assertEqual(self.BPM, 50)
         
     def test_print_help(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         expected = [
             "\nCommands:",

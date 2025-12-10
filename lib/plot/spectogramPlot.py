@@ -6,7 +6,8 @@ from scipy.signal.windows import gaussian
 
 def spectogramPlot(x: list|np.ndarray, Fs: int, plot: axes.Axes, title:str=None):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Plots a spectogram
 

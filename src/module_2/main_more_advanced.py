@@ -12,7 +12,8 @@ from lib.model.generate import *
 
 def main():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     config = ConfigParser()
     Fs = config.HeartSoundModel.Fs
@@ -35,7 +36,8 @@ def main():
     
 def plotOriginal():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     config = ConfigParser()
     Fs = config.HeartSoundModel.Fs

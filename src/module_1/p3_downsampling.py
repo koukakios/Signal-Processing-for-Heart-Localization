@@ -5,7 +5,8 @@ from lib.processing.Processor import Processor
 
 def assignment431():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     The function that houses assignment 4.3.1.
     
@@ -16,7 +17,8 @@ def assignment431():
 
 def assignment432(config: ConfigParser):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     The function that houses assignment 4.3.2.
 
@@ -57,7 +59,8 @@ def assignment432(config: ConfigParser):
 
 def main():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     The main loop. Can be changed to choose whether to run assignment 4.3.1 or 4.3.2.
     

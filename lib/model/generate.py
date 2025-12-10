@@ -7,12 +7,14 @@ from random import random
 
 class ValveParams:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def __init__(self, delay_ms:float, duration_total_ms: float, duration_onset_ms:float, a_onset: float, a_main: float, 
                          ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, name: str=None):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.delay = delay_ms / 1000
         self.duration_total = duration_total_ms / 1000
@@ -27,7 +29,8 @@ class ValveParams:
         self.name = name
     def toStr(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         return [
             f"Name: {self.name}",
@@ -43,22 +46,26 @@ class ValveParams:
         ]
     def properties(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         return "name,delay,duration_total,duration_onset,a_onset,a_main,ampl_onset,ampl_main,freq_onset,freq_main"
     def values_str(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         return list(map(str, [self.name,self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]))
     def num_values(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         return [self.delay,self.duration_total,self.duration_onset,self.a_onset,self.a_main,self.ampl_onset,self.ampl_main,self.freq_onset,self.freq_main]
     def randomize(self, ratio):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         self.delay = randomize(self.delay, ratio)
         self.duration_total = randomize(self.duration_total, ratio)
@@ -72,7 +79,8 @@ class ValveParams:
 
 def advanced_model_valve_params(params: ValveParams, Fs:int):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     return advanced_model_valve(delay = params.delay, duration_total = params.duration_total, duration_onset = params.duration_onset, 
                                 a_onset = params.a_onset, a_main = params.a_main, ampl_onset = params.ampl_onset,  
@@ -84,7 +92,8 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
     # ampl_onset = 0.1
     # freq_onset = freq_main
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     duration_main = duration_total - duration_onset if duration_total >= duration_onset else 0
     
@@ -122,7 +131,8 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
 def advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves):
     # Generate sounds of single valves
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     t_out = []
     h_out = []
@@ -159,7 +169,8 @@ def advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves):
 
 def advanced_model(Fs, BPM, lf, hf, order, size, valves, n, randomize_enabled: bool = False, r_ratio: float = 0, bpm_ratio: float = 0, noise: float = 0):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     if not randomize_enabled:
         t_filtered, h_filtered = advanced_model_single_beat(Fs, BPM, lf, hf, order, size, valves)
@@ -189,13 +200,15 @@ def advanced_model(Fs, BPM, lf, hf, order, size, valves, n, randomize_enabled: b
         
 def randomize(val, ratio):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     return val * (1 + ratio * random())
 
 def repeat(n, h_filtered, t_filtered, Fs, length):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     h_full = np.zeros(length * n + max(0, len(h_filtered) - length))
     for i in range(0, n * length, length):

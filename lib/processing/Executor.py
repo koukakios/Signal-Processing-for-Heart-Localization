@@ -5,11 +5,13 @@ from lib.processing.Processor import Processor
 
 class Executor:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def __init__(self, folder_path: str, config: ConfigParser, log: bool = False):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         p = Path(folder_path)
         if not p.exists():
@@ -28,7 +30,8 @@ class Executor:
         
     def execute(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         processor = Processor(None, self.config, log=self.log_enabled, save_steps=True)
         for file in self.files:
@@ -44,14 +47,16 @@ class Executor:
         
     def summarize(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         print(f"Finished with the following results:")
         for file, r in self.results.items():
             print(f"{file.stem}: s1: {r[0]};  s2: {r[1]}; u: {r[2]}; tot: {sum(r)}")
     def log(self, msg):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         if self.log_enabled:
             print(msg)

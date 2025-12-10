@@ -8,7 +8,8 @@ from src.module_2.plot import Plot
 
 def generateSounds(config: ConfigParser, valves: list[ValveParams]|None = None, write_enabled: bool = True, randomize: bool = False):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     n = config.HeartSoundModel.NBeats
     Fs = config.HeartSoundModel.Fs

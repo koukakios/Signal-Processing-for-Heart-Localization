@@ -1,6 +1,7 @@
 class AttrSection:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Attribute-style access wrapper for a configuration section.
 
@@ -15,7 +16,8 @@ class AttrSection:
     
     def __init__(self, section_name: str, config: dict):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Initialize an attribute wrapper for a configuration section.
 
@@ -29,7 +31,8 @@ class AttrSection:
         
     def __getattr__(self, name):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Retrieve a configuration value as an attribute.
 
@@ -48,7 +51,8 @@ class AttrSection:
     
     def __setattr__(self, name, value):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
 
         Assign a configuration value via attribute syntax.
@@ -68,7 +72,8 @@ class AttrSection:
             
     def keys(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Return all configuration keys in this section.
 

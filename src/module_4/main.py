@@ -1,6 +1,7 @@
 def main():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     pass
 

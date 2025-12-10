@@ -9,7 +9,8 @@ from lib.processing.Processor import Processor
 
 def result45(config):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav"
     processor = Processor(path, config, save_steps=True)
@@ -85,7 +86,8 @@ def result45(config):
     
 def filter45(config):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     path = ".\\samples\\stethoscope_2_realHeart_\\recording_2025-07-10_14-34-04_channel_1.wav"
     processor = Processor(path, config, save_steps=True)
@@ -108,7 +110,8 @@ def filter45(config):
 
 def main():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     The main loop. Can be changed to choose whether to run assignment 4.2.2 or 4.2.3.
     

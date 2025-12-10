@@ -15,7 +15,8 @@ plt.ion()
 
 def getData():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     config = ConfigParser()
 
@@ -25,13 +26,15 @@ def getData():
 
 def timeOriginal(shift, length, Fs):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     return np.linspace(shift, shift+length/Fs, length)
     
 def getCommand(cmd: str, general_specifiers: list, general_props: list, peak_specifiers: list, peak_props: list):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     pattern = fr"^((?P<specg>[{''.join(general_specifiers)}])\s+(?P<propg>{'|'.join(general_props)})\s+(?P<valg>[\-0-9.,_]+)|"+\
         fr"(?P<specp>[{''.join(peak_specifiers)}])\s+(?P<propp>{'|'.join(peak_props)})\s+(?P<valp>[\-0-9.,_]+))$"
@@ -45,7 +48,8 @@ def getCommand(cmd: str, general_specifiers: list, general_props: list, peak_spe
 
 def matchParams():
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     config = ConfigParser()
     Fs = config.HeartSoundModel.Fs
@@ -96,7 +100,8 @@ def matchParams():
     
     def updateOriginal(shift):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         t = timeOriginal(shift, len(processor.y_normalized), processor.Fs_target)
         original.set_xdata(t)
@@ -104,7 +109,8 @@ def matchParams():
         
     def updateModel(BPM, n, valves):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         t_model, h_model = advanced_model(
             Fs,
@@ -133,24 +139,28 @@ def matchParams():
     
     def print_specs():
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         print(f"Specifiers:\n  - General: G\n  - Peaks: {', '.join(names)}")
     def print_props():
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         print(f"Props:\n  - General: {', '.join(general_props)}\n  - Peaks: {', '.join(peak_props)}")
     def print_vals(BPM, shift, valves):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         print(f"""Original:\n  - shift: {shift}s\nModel:\n  - BPM: {BPM}\n  - Valves:""")
         for valve in valves:
             print("  - " + "\n    ".join(valve.toStr()))
     def print_help():
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         print(f"""Help:
 

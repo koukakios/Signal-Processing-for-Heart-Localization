@@ -11,11 +11,13 @@ from lib.config.ConfigParser import ConfigParser
 
 class OriginalSound:
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def __init__(self, file_path: str|Path, config: ConfigParser):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Initialize a wrapper for the original sound.
 
@@ -37,7 +39,8 @@ class OriginalSound:
         
     def reset(self) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Reset the original sound to the initial values.
         
@@ -46,7 +49,8 @@ class OriginalSound:
         
     def get_sound_init(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Get all the properties of the origninal sound, including the frequency spectrum.
 
@@ -68,7 +72,8 @@ class OriginalSound:
     
     def get_time(self) -> np.ndarray:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Get the time axis of the original sound.
 
@@ -81,7 +86,8 @@ class OriginalSound:
     
     def generate_summary(self) -> str:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Generate a readable summary of the original sound params.
 
@@ -93,7 +99,8 @@ class OriginalSound:
     
     def import_csv(self, file_path: str|Path) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Import the original sound params from a csv file.
 
@@ -111,7 +118,8 @@ class OriginalSound:
         
     def import_csv_s(self, contents: str) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Import the original sound params from a csv string.
 
@@ -152,7 +160,8 @@ class OriginalSound:
     
     def generate_csv(self) -> str:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Generate the csv string for the params of the original sound.
 
@@ -166,7 +175,8 @@ class OriginalSound:
     
     def export_csv(self, file_path: str|Path) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Export the params of the original sound to a csv file.
 
@@ -181,7 +191,8 @@ class OriginalSound:
             
     def export_readable(self, file_path: str|Path) -> None:
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
 
         Export the readable summary to a file.
 

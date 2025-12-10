@@ -3,10 +3,12 @@ from src.module_3.beamforming import a_lin
 
 class TestBeamforming(unittest.TestCase):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
     """
     def setUp(self):
         """
-        @meta
+        @author: Gerrald
+        @date: 10-12-2025
         """
         return super().setUp()

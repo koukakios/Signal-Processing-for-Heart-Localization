@@ -5,7 +5,8 @@ import numpy as np
 
 def getDamping(x: list|np.ndarray, freq:int, Fs: int, resolution: int|None = None):
     """
-    @meta
+    @author: Gerrald
+    @date: 10-12-2025
 
     Get the damping of a transfer function x at freq Hz.
 
