@@ -135,6 +135,10 @@ class Processor:
         self.Fs_original, self.x = wavfile.read(self.file_path)
         
     def preprocess(self):
+        """
+        @author: Gerrald
+        @date: 10-12-2025
+        """
         if self.x is None or self.Fs_original is None:
             self.load()
         
@@ -151,6 +155,10 @@ class Processor:
         self.y_normalized = normalize(self.y_downsampled)
         
     def process(self):
+        """
+        @author: Gerrald
+        @date: 10-12-2025
+        """
         if self.y_normalized is None:
             self.preprocess()
         self.log("Calculating Shannon energy...")
@@ -169,6 +177,10 @@ class Processor:
         self.peaks, _ = get_peaks(self.see_normalized, self.segmentation_min_height, self.segmentation_min_dist)
         
     def classify(self):
+        """
+        @author: Gerrald
+        @date: 10-12-2025
+        """
         self.log("Classifying peaks...")
         
         # Initial classification - baseline measurement
@@ -205,6 +217,10 @@ class Processor:
         
 
     def segment(self):
+        """
+        @author: Gerrald
+        @date: 10-12-2025
+        """
         self.log("Segmenting them...")
         
         # Sort arrays for further processing
@@ -223,6 +239,10 @@ class Processor:
         
     def write(self):
         # Path were it is saved "value from config/subfolder/(concat|segmented)/(raw|processed)/file"
+        """
+        @author: Gerrald
+        @date: 10-12-2025
+        """
         basefolder = join(self.generation_path, self.subfolder)
         
         if self.write_result_processed:

@@ -65,7 +65,9 @@ def insert_meta_into_file(path: str, self_path: str) -> bool:
             # existing docstring
             start = first.lineno - 1
             end = getattr(first, "end_lineno", start) - 1
-
+            text_asm = "".join(lines[start:end])
+            if "@meta" in text_asm or "@author" in text_asm:
+                continue
             # try to detect prefix and quote from the opening line
             opening_line = lines[start] if start < len(lines) else ""
             m = re.match(r"^(?P<indent>\s*)(?P<prefix>[rubfRUBF]*)(?P<quote>'{3}|\"{3})", opening_line)

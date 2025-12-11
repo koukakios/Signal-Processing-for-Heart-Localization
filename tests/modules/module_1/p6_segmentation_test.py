@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 from src.module_1.p6_segmentation import *
 
 class TestCLI(unittest.TestCase):
+    """
+    @author: Gerrald
+    @date: 10-12-2025
+    """
     @patch("matplotlib.pyplot.show", lambda: None)  # replaces show with no-op
     def test_no_error(self):
         """

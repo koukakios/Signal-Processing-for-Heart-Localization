@@ -20,6 +20,7 @@ for file in files:
     updated_contents = []
     for line in contents.split("\n"):
         if "@author" in line or "@date" in line:
+            updated_contents.append(line)
             continue
         if not ("@meta" in line):# or "@author" in line or "@date" in line ):
             updated_contents.append(line)
