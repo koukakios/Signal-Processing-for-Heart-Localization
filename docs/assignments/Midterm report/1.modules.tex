@@ -335,7 +335,7 @@ This constraint has a specified $\theta_0$ and the gain of the signal that comes
 \end{equation}
 
 
-The solution of these two constrains result in:
+The solution of these two constrains results in the following:
 
 \begin{equation}
 \textbf{w}_{opt}=\frac{\textbf{R}_x^{-1}\textbf{a}(\theta)}{\textbf{a}^\textit{H}(\theta)\textbf{R}_x\textbf{a}(\theta)}
@@ -354,7 +354,7 @@ Analysis of the functions used in MVDR:
     \begin{lstlisting}[language=Python]
     def a_lin(theta, M, d, v, f0):
     \end{lstlisting}  
-    theta is a given angle, M is the number of microphones, d is the spacing between the microphones, v is the speed of sound, and f0 is a chosen frequency (more later). The function computes and returns the steering vector $mathbf{a}(\theta)$ as shown in  \ref{steering_vector_calculation}.
+    which is the same as described in  \ref{steering_vector_calculation}.
 
     \item The function \begin{lstlisting}[language=Python]
     def matchedbeamforming(th_range, M, d, v, f0, Rx):
