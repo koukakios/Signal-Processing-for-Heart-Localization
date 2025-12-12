@@ -55,6 +55,8 @@ with open("NoCommit_Latex_include_code.tex", "w") as fp:
         if parent_path != previous_parent_path:
             fp.write(f"""\\section{{{overlize(parent_path)}}}\n""")
             previous_parent_path = parent_path
-        fp.write(f"""\\subsection*{{{overlize(path)}}}
+        fp.write(f"""
+\\phantomsection
+\\subsection*{{{overlize(path)}}}
 \\label{{ap:{get_unique_label(path, labels)}}}
 \\{get_command(path)}{{../../../{overlize(path, is_path=True)}}}\n""")
