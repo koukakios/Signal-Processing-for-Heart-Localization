@@ -4,10 +4,10 @@ import queue
 
 from lib.config.ConfigParser import ConfigParser
 
-from lib.model_optimize.GUI.CLI import CLI
-from lib.model_optimize.GUI.CommandProcessor import CommandProcessor
-from lib.model_optimize.GUI.CommandUtils import generateStandardCommands
-from lib.model_optimize.GUI.Plot import Plot
+from lib.model_optimize.TUI.CLI import CLI
+from lib.model_optimize.TUI.CommandProcessor import CommandProcessor
+from lib.model_optimize.TUI.CommandUtils import generateStandardCommands
+from lib.model_optimize.TUI.Plot import Plot
 
 
 class ParamMatcher:
