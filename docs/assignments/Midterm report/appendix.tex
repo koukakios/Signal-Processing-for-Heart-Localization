@@ -1,5 +1,172 @@
+
+\chapter{ Block diagrams}
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/module_1/classification_flowchart.png}
+    \caption{Block diagram of the steps taken by the functions "classify\_peaks" and "analyze\_diff2".}  
+    \label{fig:classificationchart}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/module_1/solve_uncertains.png}
+    \caption{Block diagram of the steps taken to increase the global threshold and the steps used by the function "solve\_uncertains".}  
+    \label{fig:solve_uncertains_chart}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{docs/assignments/Midterm report/figures/module_3/Beamformer/beamforming_pipeline.png}
+    \caption{Description of the beamformer pipeline.}  
+    \label{fig:beamformer_pipeline}
+\end{figure}
+
+\chapter{Module_3_Calculations}
+
+
+Calculation for central frequency.
+Given the spacing $d = 0.1$ m and assuming the speed of sound $v = 343$ m/s:
+\begin{equation}
+    f = \frac{v}{2d} = \frac{343}{2 \cdot 0.1} = \frac{343}{0.2} = 1715 \text{ Hz}
+\end{equation}
+\label{module_3_calculation_central_frequency}
+
+\chapter{Module_3_plots}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/module_3/Beamformer/Beamformer 1 source/Beamformer_30.png}
+    \caption{Beamformer .}  
+    \label{fig:beamformer_30}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/module_3/Beamformer/Beamformer 1 source/Beamformer_60.png}
+    \caption{Block diagram of the steps taken to increase the global threshold and the steps used by the function "solve\_uncertains".}  
+    \label{fig:beamformer_60}
+\end{figure}
+
 \chapter{Code}
 
-\section{src}
-\subsection{src/main.py}
-\lstinputlisting{../../../lib/os/pathutils.py}
+\section{Project Root}
+\subsection*{config.ini}
+\label{ap:config}
+\inifile{../../../config.ini}
+\section{src/chapter\_2}
+\subsection*{src/chapter\_2/main.py}
+\label{ap:main}
+\pythonfile{../../../src/chapter_2/main.py}
+\section{src/module\_1}
+\subsection*{src/module\_1/p2\_lp\_filtering.py}
+\label{ap:p2_lp_filtering}
+\pythonfile{../../../src/module_1/p2_lp_filtering.py}
+\subsection*{src/module\_1/p3\_downsampling.py}
+\label{ap:p3_downsampling}
+\pythonfile{../../../src/module_1/p3_downsampling.py}
+\subsection*{src/module\_1/p4\_spectrogram\_analysis.py}
+\label{ap:p4_spectrogram_analysis}
+\pythonfile{../../../src/module_1/p4_spectrogram_analysis.py}
+\subsection*{src/module\_1/p5\_energy\_detection.py}
+\label{ap:p5_energy_detection}
+\pythonfile{../../../src/module_1/p5_energy_detection.py}
+\subsection*{src/module\_1/p6\_segmentation.py}
+\label{ap:p6_segmentation}
+\pythonfile{../../../src/module_1/p6_segmentation.py}
+\subsection*{src/module\_1/p7\_integration.py}
+\label{ap:p7_integration}
+\pythonfile{../../../src/module_1/p7_integration.py}
+\section{src/module\_2}
+\subsection*{src/module\_2/assignment531.py}
+\label{ap:assignment531}
+\pythonfile{../../../src/module_2/assignment531.py}
+\subsection*{src/module\_2/cli.py}
+\label{ap:cli}
+\pythonfile{../../../src/module_2/cli.py}
+\subsection*{src/module\_2/CommandProcessor.py}
+\label{ap:CommandProcessor}
+\pythonfile{../../../src/module_2/CommandProcessor.py}
+\subsection*{src/module\_2/commandUtils.py}
+\label{ap:commandUtils}
+\pythonfile{../../../src/module_2/commandUtils.py}
+\subsection*{src/module\_2/generateModel.py}
+\label{ap:generateModel}
+\pythonfile{../../../src/module_2/generateModel.py}
+\subsection*{src/module\_2/main\_more\_advanced.py}
+\label{ap:main_more_advanced}
+\pythonfile{../../../src/module_2/main_more_advanced.py}
+\subsection*{src/module\_2/main\_old.py}
+\label{ap:main_old}
+\pythonfile{../../../src/module_2/main_old.py}
+\subsection*{src/module\_2/ParamMatcher.py}
+\label{ap:ParamMatcher}
+\pythonfile{../../../src/module_2/ParamMatcher.py}
+\subsection*{src/module\_2/plot.py}
+\label{ap:plot}
+\pythonfile{../../../src/module_2/plot.py}
+\section{src/module\_3}
+\subsection*{src/module\_3/beamforming.py}
+\label{ap:beamforming}
+\pythonfile{../../../src/module_3/beamforming.py}
+\subsection*{src/module\_3/main.py}
+\label{ap:module_3-main}
+\pythonfile{../../../src/module_3/main.py}
+\section{src/module\_4}
+\subsection*{src/module\_4/main.py}
+\label{ap:module_4-main}
+\pythonfile{../../../src/module_4/main.py}
+\section{lib/audio}
+\subsection*{lib/audio/wavaudioread.py}
+\label{ap:wavaudioread}
+\pythonfile{../../../lib/audio/wavaudioread.py}
+\section{lib/config}
+\subsection*{lib/config/AttrSection.py}
+\label{ap:AttrSection}
+\pythonfile{../../../lib/config/AttrSection.py}
+\subsection*{lib/config/ConfigDefaults.py}
+\label{ap:ConfigDefaults}
+\pythonfile{../../../lib/config/ConfigDefaults.py}
+\subsection*{lib/config/ConfigParser.py}
+\label{ap:ConfigParser}
+\pythonfile{../../../lib/config/ConfigParser.py}
+\section{lib/general}
+\subsection*{lib/general/generalUtils.py}
+\label{ap:generalUtils}
+\pythonfile{../../../lib/general/generalUtils.py}
+\section{lib/model}
+\subsection*{lib/model/generate.py}
+\label{ap:generate}
+\pythonfile{../../../lib/model/generate.py}
+\subsection*{lib/model/Model.py}
+\label{ap:Model}
+\pythonfile{../../../lib/model/Model.py}
+\subsection*{lib/model/OriginalSound.py}
+\label{ap:OriginalSound}
+\pythonfile{../../../lib/model/OriginalSound.py}
+\section{lib/os}
+\subsection*{lib/os/pathUtils.py}
+\label{ap:pathUtils}
+\pythonfile{../../../lib/os/pathUtils.py}
+\section{lib/plot}
+\subsection*{lib/plot/frequencyUtils.py}
+\label{ap:frequencyUtils}
+\pythonfile{../../../lib/plot/frequencyUtils.py}
+\subsection*{lib/plot/spectogramPlot.py}
+\label{ap:spectogramPlot}
+\pythonfile{../../../lib/plot/spectogramPlot.py}
+\subsection*{lib/plot/timeFrequencyPlot.py}
+\label{ap:timeFrequencyPlot}
+\pythonfile{../../../lib/plot/timeFrequencyPlot.py}
+\section{lib/processing}
+\subsection*{lib/processing/dataprocessing.py}
+\label{ap:dataprocessing}
+\pythonfile{../../../lib/processing/dataprocessing.py}
+\subsection*{lib/processing/Executor.py}
+\label{ap:Executor}
+\pythonfile{../../../lib/processing/Executor.py}
+\subsection*{lib/processing/functions.py}
+\label{ap:functions}
+\pythonfile{../../../lib/processing/functions.py}
+\subsection*{lib/processing/Processor.py}
+\label{ap:Processor}
+\pythonfile{../../../lib/processing/Processor.py}

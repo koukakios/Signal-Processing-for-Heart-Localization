@@ -1,6 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{tudelft-report}[2013/06/22 v1.0 TU Delft thesis class]
-
+\usepackage{listings}
+\usepackage{xcolor}
 \newif\if@dutch
 \newif\if@english
 \newif\if@nativefonts
