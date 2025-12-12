@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib import axes
-from lib.os.pathutils import getFilesExt
+from lib.os.pathUtils import get_files_ext
 from os.path import exists, join, basename
 import pandas as pd
 from scipy.io import wavfile
@@ -8,13 +8,18 @@ from scipy.fft import fft
 import numpy as np
 
 def plot_pcg(file: str, time_ax: axes.Axes, freq_ax: axes.Axes, title:str=None):
-    """_summary_
+    """
+    @author: Gerrald
+    @date: 10-12-2025
+
+    _summary_
 
     Args:
         file (str): The file to render
         time_ax (axes.Axes): The matplotlib ax to plot the time domain of the signal on.
         freq_ax (axes.Axes): The matplotlib ax to plot the time domain of the signal on.
         title (str, optional): The title of the plot. Defaults to None.
+    
     """
     if title is None:
         title = basename(file).split("_")[0]
@@ -37,7 +42,11 @@ def plot_pcg(file: str, time_ax: axes.Axes, freq_ax: axes.Axes, title:str=None):
     
 
 def main(pcg_dir: str = "./samples/chapter_2/", csv_data_file: str = None):
-    """Creates plots of the signal and its frequency spectrum based on the files in pcg_dir
+    """
+    @author: Gerrald
+    @date: 10-12-2025
+
+    Creates plots of the signal and its frequency spectrum based on the files in pcg_dir
 
     Args:
         pcg_dir (str, optional): The path to the wav files. Defaults to "./samples/chapter_2/".
@@ -45,18 +54,18 @@ def main(pcg_dir: str = "./samples/chapter_2/", csv_data_file: str = None):
 
     Returns:
         int: 0 on success, -1 on failure
+    
     """
     # Get all wav files from the samples directory
-    pcgs = getFilesExt(".wav", pcg_dir)
+    pcgs = get_files_ext(".wav", pcg_dir)
     # Get csv data
     if csv_data_file is None:
-        csv_files = getFilesExt(".csv", pcg_dir)
+        csv_files = get_files_ext(".csv", pcg_dir)
         if len(csv_files) > 1:
             print("ERROR: multiple csv datafiles. Please specify the correct one using the csv_data_file parameter.")
             return -1
         elif len(csv_files) == 1:
             csv_data_file = join(pcg_dir, csv_files[0])
-            print(f"using {csv_files}")
         else:
             print("WARNING: no csv datafile found. Not using any info from the datafile.")
     else:

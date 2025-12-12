@@ -1,0 +1,187 @@
+\documentclass[whitelogo,oneside]{TUD-report2020}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{circuitikz}
+\usepackage[
+backend=biber,
+style=ieee,
+]{biblatex}
+\addbibresource{report.bib}
+\usepackage{changes}
+\usepackage[normalem]{ulem}
+\newcommand{\Hw}{\mathbf{H}(\omega)}
+\newcommand{\Ohm}{$\Omega$ }
+\DeclareUnicodeCharacter{2212}{-}
+
+%% Dependencies
+% Appendices
+\usepackage[toc,page]{appendix}
+% Flexible bibliography
+%\usepackage{natbib}
+% ToDo notes
+\usepackage{todonotes}
+% Enumeration
+\usepackage{nth}
+% Fancy tables
+\usepackage{tabularx}
+\usepackage{booktabs}
+% Floats
+\usepackage{float}
+% Numbers
+\usepackage{numprint}
+\npthousandsep{\,}
+% Inline lists
+\usepackage[inline]{enumitem}
+% Subfigures
+\usepackage{subcaption}
+% Correct single quotes
+\usepackage{textcomp}
+% Colored boxes
+\usepackage{tcolorbox}
+\usepackage{float}
+% Custom list spacing
+\usepackage{enumitem}
+% Python code display
+\usepackage{minted}
+% Set theme. pastie has more contrast than solarized-light
+%\usemintedstyle{solarized-light}
+\usemintedstyle{pastie}
+\renewcommand{\theFancyVerbLine}{\textcolor{darkgray}{\small\arabic{FancyVerbLine}}}
+% Define a Python style
+\newmintedfile{python}{ linenos,
+            breakanywhere=true,
+            breaklines,
+            frame=lines,
+            fontsize=\small,        % font size
+            bgcolor=black!3,        % light gray background
+            baselinestretch=1.2,    % line spacing
+            breaklines=true,        % wrap long lines
+}
+\newmintedfile{ini}{ linenos,
+            breakanywhere=true,
+            breaklines,
+            frame=lines,
+            fontsize=\small,        % font size
+            bgcolor=black!3,        % light gray background
+            baselinestretch=1.2,    % line spacing
+            breaklines=true,        % wrap long lines
+}
+
+
+%% Setup
+% Base path for all figures
+\graphicspath{ {figures/} }
+
+% Citation needed
+\newcommand{\citationneeded}{\textsuperscript{\color{blue} [citation needed]}}
+
+% Inline lists
+\newlist{inlinelist}{enumerate*}{1}
+\setlist[inlinelist]{label=(\roman*)}
+
+% Count subsubsections, as well
+\setcounter{secnumdepth}{3}
+
+% Research conclusions
+\newtcolorbox{linkbox}{colback=tudelft-cyan!30, colframe=white,top=0.35cm,right=0.65cm,bottom=0.35cm, boxrule=0pt, arc=0pt}
+
+% Set up ToDo notes package
+\newcommand{\todoall}[1]{\todo[inline, caption={}, color=red!40]{Everyone: #1}}
+\newcommand{\todoany}[1]{\todo[inline, caption={}, color=orange!40]{Anyone: #1}}
+%%% ADD YOUR OWN TODO COMMANDS HERE, IF WANTED %%%
+
+%%% FILL THIS IN %%%
+
+% Your product name
+\newcommand{\productName}{Final report}
+
+% Your group number 
+\newcommand{\groupNumber}{X}
+
+% Your names
+\newcommand{\studentNames}{%
+Gerrald van Weelden (6320775), Ruben Jochemsen (6232531), Konstantinos Koukakis (), Arinze Ugwoke (6157041)\\
+\vspace{1cm}
+TA: Jelena Pešić\\
+\vspace{1cm}
+Bachelor Electrical Engineering,\\
+\today\\
+}
+
+\begin{document}
+
+%% Use Roman numerals for the page numbers of the title pages and table of
+%% contents.
+ 
+
+%% Uncomment following 19 lines for a cover with a picture on the lower half only
+%\title[tudelft-white]{Title}
+%\subtitle[tudelft-cyan]{Optional subtitle}
+%\author[tudelft-white]{J.\ Random Author}
+%\affiliation{Technische Universiteit Delft}
+%\coverimage{cover.jpg}
+%\titleoffsetx{10cm}
+%\titleoffsety{10cm}
+%\afiloffsetx{1cm}
+%\afiloffsety{18cm}
+%\covertext[tudelft-white]{
+%    \textbf{Cover Text} \\
+%    possibly \\
+%    spanning 
+%    multiple 
+%    lines
+%    \vfill
+%    ISBN 000-00-0000-000-0
+%}
+%\makecover
+
+%% Uncomment following 16 lines for a cover with a picture on the lower half only
+
+
+% Numbering style
+\frontmatter
+
+%% Metadata
+\title[tudelft-white]{EE2L1 IP-3 Project: Heart Sound Localization}
+\subtitle[tudelft-black]{\productName}
+\author[tudelft-white]{Group A.H.03}
+\affiliation{Delft University of Technology}
+\coverimage{cover/coverimage.jpg}
+
+%% Content
+% Coverpage
+\setpagecolor{tudelft-cyan}
+\makecover[split,whitelogo]
+
+% Frontmatter chapters
+\input{title-page.tex}
+
+%% Include an optional title page.
+% \input{title}
+
+% \input{preface}
+
+\tableofcontents
+
+%% Use Arabic numerals for the page numbers of the chapters.
+\mainmatter
+
+\input{0.introduction}
+\input{1.modules}
+\input{2.conclusion}
+\input{3.discussion}
+
+
+
+\printbibliography
+
+%% Use letters for the chapter numbers of the appendices.
+
+%\input{appendix-a}
+ 
+%\appendix
+%\input{appendix}
+
+\end{document}
+
