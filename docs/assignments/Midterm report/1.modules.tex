@@ -345,7 +345,7 @@ The power response of the system will be the output:
 \begin{equation}
     P_y(\theta)=\textbf{w}^\textit{H}\textbf{R}_x\textbf{w}=\frac{1}{\textbf{a}^\textit{H}(\theta)\textbf{R}_x^{-1}\textbf{a}(\theta)}
 \end{equation}
-The intuition behind the power equation needs to be explained. In practice, Rx expresses the power of the signal along different directions \textbf{\theta}. This means that Rx is bigger in where the power of the signal is larger. Thus $R_x^{-1}$ is smaller along the direction where the power is larger, and bigger where the power is lower, as it is the inverse of Rx. Thus when \mathbf{{a}(\theta)} points along the direction with the higher power $R_x^{-1}$\mathbf{{a}(\theta)} becomes small, so \frac{1}{$R_x^{-1}$\mathbf{{a}(\theta)}} large. That is why there will be a peak. In the other case, the power will be small because the denominator is going to be large.
+The intuition behind the power equation needs to be explained. In practice, Rx expresses the power of the signal along different directions $\textbf{\theta}$$. This means that Rx is bigger in where the power of the signal is larger. Thus $R_x^{-1}$ is smaller along the direction where the power is larger, and bigger where the power is lower, as it is the inverse of Rx. Thus when \mathbf{{a}(\theta)} points along the direction with the higher power $R_x^{-1}$\mathbf{{a}(\theta)} becomes small, so \frac{1}{$R_x^{-1}$\mathbf{{a}(\theta)}} large. That is why there will be a peak. In the other case, the power will be small because the denominator is going to be large.
 
 
 Analysis of the functions used in MVDR:
