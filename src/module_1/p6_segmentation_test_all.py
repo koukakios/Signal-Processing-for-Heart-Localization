@@ -92,7 +92,18 @@ def segmentation_light(config, path = None, write_results: bool = True):
     
     plt.show()
 
+# Some structure to skip the files till the file in the last var
+last = ".\\samples\\piezo_4_realHeart\\recording_2025-07-10_15-19-01_channel_2.wav"
+passed_last = False
 for file in files:
+    if not passed_last:
+        if not Path(last) in files:
+            print(f"WARNING: {last} not in {", ".join([file.parent.stem+"\\"+file.stem+file.suffix for file in files])}")
+            break
+        if Path(last) == file:
+            passed_last = True
+        print(f"Skipped {file.parent.stem}\\{file.stem+file.suffix}")
+        continue
     try:
         segmentation_light(config, str(file), write_results = False)
     except Exception as e:
