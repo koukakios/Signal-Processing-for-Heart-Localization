@@ -113,3 +113,92 @@ Given the spacing $d = 0.1$ m and assuming the speed of sound $v = 343$ m/s:
     \caption{Beamformer at +7$^\circ$, -7$^\circ$, higher resolution.}  
     \label{fig:music_2_source_1687}
 \end{figure}
+
+
+\section{Assignments module 3 and 4}
+\subsection{Assignment 6.2.3}
+
+\subsection{Assignment 6.2.6}
+\label{assigment_6.2.6}
+For direction of arrival at $0^\circ$, $M = 7$, $f = 500\text{Hz}$, 
+and $v = 340\text{m/s}$, the following plots have been acquired. 
+It is obvious that the resolution increases (sharper lobes) but 
+aliasing is introduced with increasing $\Delta$.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/Assignments/assignment_6.2.6.1.png}
+    \caption{}  
+    \label{fig:assignment_6.2.6.1}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/Assignments/assignment_6.2.6.2.png}
+    \caption{}  
+    \label{fig:assignment_6.2.6.2}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/Assignments/assignment_6.2.6.3.png}
+    \caption{}  
+    \label{fig:assignment_6.2.6.3}
+\end{figure}
+
+
+For a different angle , e.g. $30^\circ$, the following plots were obtained, confirming that aliasing might lead to misleading information.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/Assignments/Assigment 6.2.6/30 degrees.png}
+    \caption{}  
+    \label{fig:assignment_6.2.6.30a}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/Assignments/Assigment 6.2.6/30 degrees 2.png}
+    \caption{}  
+    \label{fig:assignment_6.2.6.30b}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{docs/assignments/Midterm report/figures/Assignments/Assigment 6.2.6/30 degrees 3.png}
+    \caption{}  
+    \label{fig:assignment_6.2.6.30c}
+\end{figure}
+
+
+\subsection{Assignment 6.2.9}
+
+\begin{enumerate}
+    \item \textbf{Narrowband Condition (Linear Array)} \\
+    The text states the condition is $B \ll v/D$, where $D = (M-1)d$. \\
+    Given: $M=6$, $d=0.1$ m, $v \approx 340$ m/s (speed of sound).
+    $$ D = (6-1)(0.1) = 0.5 \text{ m} $$
+    $$ B \ll \frac{340}{0.5} = 680 \text{ Hz} $$
+    
+    \item \textbf{Minimal Spacing for Spatial Aliasing} \\
+    The text states we need $\Delta < 1/2$, which means $d < \lambda/2$. \\
+    Given: $F_0 = 1000$ Hz.
+    $$ \lambda = \frac{v}{F_0} = \frac{340}{1000} = 0.34 \text{ m} $$
+    $$ d < \frac{0.34}{2} = 0.17 \text{ m} $$
+    The spacing must be less than 17 cm.
+
+    \item \textbf{Heart Sound Array ($2 \times 3$)} \\
+    We need $B \ll v_{body}/D_{max}$. \\
+    Given: Spacing $d=0.05$ m, $v_{body} = 60$ m/s. \\
+    The array is 2 rows by 3 columns. The max distance $D$ is the diagonal from corner to corner.
+    $$ \text{Width} = (3-1)d = 2d, \quad \text{Height} = (2-1)d = 1d $$
+    $$ D = \sqrt{(2d)^2 + (d)^2} = d\sqrt{5} \approx 0.05 \times 2.236 = 0.112 \text{ m} $$
+    $$ B \ll \frac{60}{0.112} \approx 536 \text{ Hz} $$
+
+    \item \textbf{Physical Reason for $\Delta$} \\
+    $\Delta = d/\lambda$ represents the sampling density in space.
+    \begin{itemize}
+        \item \textbf{Smaller $\Delta$:} Samples are very close. This reduces the phase difference between microphones, making the main lobe wider (worse resolution).
+        \item \textbf{Larger $\Delta$:} Samples are far apart. This improves resolution (sharper lobe), but if $\Delta > 0.5$, the sensors are too far apart to distinguish the wave cycle uniqueley (undersampling), causing spatial aliasing (false peaks).
+    \end{itemize}
+\end{enumerate}
