@@ -32,7 +32,7 @@ def segmentation_light(config, path = None, write_results: bool = True):
     if path is None:
         path = paths[1]
         #path = ".\\generated\\hearbeat model\\Advanced-48000Hz-66BPM-200 beats.wav"
-    path = "samples\\piezo_2_realHeart\\recording_2025-07-10_15-15-17_channel_6.wav"
+    # path = "samples\\piezo_2_realHeart\\recording_2025-07-10_15-15-17_channel_6.wav"
     processor = Processor(path, config, postprocessing=True, write_result_processed=write_results, write_result_raw=write_results, subfolder="Generated sounds")
     
     processor.run()
