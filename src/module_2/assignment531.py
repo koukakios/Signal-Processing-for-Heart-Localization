@@ -5,6 +5,11 @@ import matplotlib.pyplot as plt
 from lib.model.generate import *
 from lib.model.Model_3D import Model_3D
 
+# Define what this program should do
+WRITE = False
+PLOT = True
+S1 = False
+S2 = True
 
 def plot(signals, Fs):
     """
@@ -21,6 +26,12 @@ def plot(signals, Fs):
 
 if __name__ == "__main__":
     config = ConfigParser()
-    model = Model_3D(config, reduce_n=True)
+    model = Model_3D(config, reduce_n=True, simulate_S1=S1, simulate_S2=S2)
+    model.import_csv(".\\src\\module_2\\model_params.csv")
     signals, Fs = model.generate()
-    plot(signals, Fs)
+    if PLOT:
+        plot(signals, Fs)
+    if WRITE:
+        model.generate()
+        name = "S1+S2" if S1 and S2 else "S1" if S1 else "S2" if S2 else "None"
+        model.save(name)
