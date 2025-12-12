@@ -21,7 +21,7 @@ def fake_music (Rx, Q, M, th_range, d, v, f0, N):
     return Pmusic
 
 def music (X, Q, M, d, v, f0):
-    Rx = np.cov(X)
+    Rx = (1/len(X))*np.matmul(X, X.conj().T)
     eigenvals, eigenvecs = np.linalg.eigh(Rx)
     noises = M - Q
     Un = eigenvecs[:, :noises]

@@ -47,5 +47,23 @@ def spatial_spectrum(theta0):
     plt.ylabel("power out")
     plt.show()
 
+def test_spatial_spectrum(theta0):
+    M = 7
+    Delta = 2
+    v = 340
+    f0 = 500
+    d = (v*Delta/f0)
+    
+    power_out = np.array([ ( np.abs ((  np.dot(a_lin(theta, M, d, v, f0).conj().T,
+                          a_lin(theta0, M, d, v, f0))   )))**2 for theta in range (-90,90,1)  ]   )
+    theta = np.arange(-90,90)
+    plt.plot(theta, power_out)
+    plt.xlim(-90, 90)   
+    plt.ylim(0, 50)
+    plt.xlabel("angle [deg]")
+    plt.title("spacial response for fixed beamformer")
+    plt.text(-85, 40, f"M={M}\nDelta={Delta}\ntheta={theta0}")
+    plt.show()
+
 if __name__ == "__main__":
-    spatial_spectrum(0)
+    test_spatial_spectrum(30)
