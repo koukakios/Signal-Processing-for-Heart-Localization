@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     Delta_f = f_bins[1] - f_bins[0]
     print( Delta_f)
-    bin = 6
+    bin = 9
     central_freq = bin*Delta_f
     X = Sx_all[:,bin , :]
     print(X.shape)
@@ -79,12 +79,12 @@ if __name__ == "__main__":
     d = 0.10
     Rx = (X @ X.conj().T) / X.shape[1]
     radius = 7
-    zoff = 0
+    zoff = 0.2
     xyz_points = generate_scan_points(radius, zoff)
     mic_positions = generate_mic_positions(d, M)
 
     Pout = mvdr_z(Rx, M, xyz_points, v, f0, mic_positions)
-    print(xyz_points.shape)
+    print(xyz_points)
     print(Pout.shape)
     
     point_range = np.arange(len(Pout))

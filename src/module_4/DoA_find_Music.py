@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
     Delta_f = f_bins[1] - f_bins[0]
     print( Delta_f)
-    bin = 9
+    bin = 12
     central_freq = bin*Delta_f
     X = Sx_all[:,bin , :]
     print(X.shape)
