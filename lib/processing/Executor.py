@@ -30,10 +30,10 @@ class Executor:
         self.log_enabled = log
         self.results = {}
         
-    def execute(self):
+    def execute(self, write_enabled: bool = True):
         """
         @author: Gerrald
-        @date: 10-12-2025
+        @date: 17-12-2025
         """
         for file in self.files:
             self.log(f"Processing {file.stem}")
@@ -72,7 +72,8 @@ class Executor:
             processor.s2_peaks = used_peaks_s2
             
             processor.segment()
-            processor.write()
+            if write_enabled:
+                processor.write()
             
         self.log("Finished!")
         

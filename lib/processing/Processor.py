@@ -104,7 +104,7 @@ class Processor:
     def run(self, write_enabled: bool = True):
         """
         @author: Gerrald
-        @date: 10-12-2025
+        @date: 17-12-2025
 
         Run the process.
         
