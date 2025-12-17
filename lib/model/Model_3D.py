@@ -42,7 +42,7 @@ class Model_3D:
         self.V_Body = config.Multichannel.V_body
         self.simulate_S1 = simulate_S1
         self.simulate_S2 = simulate_S2
-        self.model = None
+        self.model = Model(self.config)
         self.signals = None
         self.valves = None
         
@@ -54,7 +54,6 @@ class Model_3D:
         if not Path(file_path).exists():
             raise IOError(f"{file_path} cannot be found")
         
-        self.model = Model(self.config)
         self.model.import_csv(file_path)
         if self.reduce_n:
             self.model.set_n(10)

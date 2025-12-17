@@ -27,6 +27,7 @@ def plot(signals, Fs):
 if __name__ == "__main__":
     config = ConfigParser()
     model = Model_3D(config, reduce_n=True, simulate_S1=S1, simulate_S2=S2)
+    model.model.randomize_enabled = True
     model.import_csv(".\\src\\module_2\\model_params.csv")
     signals, Fs = model.generate()
     if PLOT:

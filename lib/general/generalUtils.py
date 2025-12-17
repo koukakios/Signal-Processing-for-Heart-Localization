@@ -49,4 +49,4 @@ def randomize(val: float, ratio: float) -> float:
     Returns:
         float: The randomized value.
     """
-    return val * (1 + ratio * random())
+    return val * (1 + ratio * random() * np.sign(random() - 0.5))

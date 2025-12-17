@@ -203,7 +203,7 @@ def advanced_model(Fs: int, BPM: int, lf: float, hf: float, order: int, size: in
         return repeat(n, h_filtered, t_filtered, Fs, int(60/BPM*Fs))
     else:
         max_h_len = int(60/(BPM*(1-bpm_ratio))*Fs) * n
-        h_full = np.random.rand(max_h_len) * noise
+        h_full = np.random.rand(max_h_len) * noise * np.sign(np.random.rand(max_h_len) - 0.5)
         current_h_index = 0
         for i in range(n):
             BPM_randomized = randomize(BPM, bpm_ratio)
