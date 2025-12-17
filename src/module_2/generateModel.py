@@ -15,9 +15,11 @@ if SAVE:
     model.save()
     
 if PLOT:
-    t_model, h_model = model.generate_model()
     plt.rcParams.update({'font.size': 20})
+    t_model, h_model = model.generate_model(use_transfer=True)
     plt.plot(t_model, h_model, linewidth=2)
+    t_model_exp, h_model_exp = model.generate_model(use_transfer=False)
+    plt.plot(t_model_exp, h_model_exp, linewidth=2)
     plt.xlabel("Time (s)")
     plt.ylabel("Amplitude (relative)")
     plt.title("Modeled heart beat signal")

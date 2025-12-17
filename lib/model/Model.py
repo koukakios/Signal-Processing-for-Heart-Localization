@@ -109,13 +109,16 @@ class Model:
         
         write(wav_path, self.Fs, h_model)
     
-    def generate_model(self) -> Tuple[np.ndarray, np.ndarray]:
+    def generate_model(self, use_transfer: bool = True) -> Tuple[np.ndarray, np.ndarray]:
         """
         @author: Gerrald
         @date: 10-12-2025
 
         Generates the model time and amplitude axis.
-
+        
+        Args:
+            use_transfer(bool, optional): Whether to use the transfer function or the real function. Defaults to True.
+        
         Returns:
             Tuple[np.ndarray, np.ndarray]: t_model (the time axis), h_model (the amplitude axis).
         
@@ -130,7 +133,8 @@ class Model:
             self.valves,
             self.n, 
             randomize_enabled=self.randomize_enabled,
-            noise=0.01
+            noise=0.01,
+            use_transfer=use_transfer
         )
         
         return t_model, h_model

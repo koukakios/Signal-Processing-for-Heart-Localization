@@ -7,8 +7,12 @@ from lib.config.ConfigParser import ConfigParser
 from lib.processing.functions import construct_bandpass_filter, apply_filter
 from lib.general.generalUtils import randomize
 
+def growing_oscillation(omega, a, t_len, Fs):
+    t = np.linspace(0, t_len, t_len * Fs)
+    h = np.exp(a * t) * np.sin(omega * t)
+    return t, h
 
-def advanced_model_valve_params(params: ValveParams, Fs:int):
+def advanced_model_valve_params(params: ValveParams, Fs:int, use_transfer: bool = True):
     """
     @author: Gerrald
     @date: 10-12-2025
@@ -18,16 +22,17 @@ def advanced_model_valve_params(params: ValveParams, Fs:int):
     Args:
         params (ValveParams): The parameters of the valve to simulate.
         Fs (int): The sampling frequency of the (virtual) microphone in Hz.
-
+        use_transfer(bool, optional): Whether to use the transfer function or the real function. Defaults to True.
+        
     Returns:
         Tuple[np.ndarray, np.ndarray]: t_model, h_model
     """    
     return advanced_model_valve(delay = params.delay, duration_total = params.duration_total, duration_onset = params.duration_onset, 
                                 a_onset = params.a_onset, a_main = params.a_main, ampl_onset = params.ampl_onset,  
-                                ampl_main = params.ampl_main, freq_onset = params.freq_onset, freq_main = params.freq_main, Fs = Fs)
+                                ampl_main = params.ampl_main, freq_onset = params.freq_onset, freq_main = params.freq_main, Fs = Fs, use_transfer=use_transfer)
 
 def advanced_model_valve(delay:float, duration_total: float, duration_onset:float, a_onset: float, a_main: float, 
-                         ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, Fs:int) -> Tuple[np.ndarray, np.ndarray]:
+                         ampl_onset: float,  ampl_main:float, freq_onset:float, freq_main:float, Fs:int, use_transfer: bool = True) -> Tuple[np.ndarray, np.ndarray]:
     """    
     @author: Gerrald
     @date: 10-12-2025
@@ -45,6 +50,7 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
         freq_onset (float): The frequency of the onset in Hz.
         freq_main (float): The frequency of the main part in Hz.
         Fs (int): The sampling frequency of the (virtual) microphone in Hz.
+        use_transfer(bool, optional): Whether to use the transfer function or the real function. Defaults to True.
 
     Returns:
         Tuple[np.ndarray, np.ndarray]: t_model, h_model
@@ -53,25 +59,30 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
     
     if duration_onset > 0:
         omega_onset = 2*np.pi*freq_onset
-    
-        # Create the transfer function system of the sound
-        b, a = zpk2tf([], [a_onset-1j*omega_onset, a_onset+1j*omega_onset], omega_onset)
-        system = TransferFunction(b, a)
-        # Time array (from 0 to duration with step size of 1/Fs)
-        t = np.linspace(0, duration_onset, int(Fs * duration_onset))
-        # Impulse response (time domain)
-        t_onset, h_onset = impulse(system, T=t)
+        if use_transfer:
+            # Create the transfer function system of the sound
+            b, a = zpk2tf([], [a_onset-1j*omega_onset, a_onset+1j*omega_onset], omega_onset)
+            system = TransferFunction(b, a)
+            # Time array (from 0 to duration with step size of 1/Fs)
+            t = np.linspace(0, duration_onset, int(Fs * duration_onset))
+            # Impulse response (time domain)
+            t_onset, h_onset = impulse(system, T=t)
+        else:
+            t_onset, h_onset = growing_oscillation(omega_onset, a_onset, duration_onset, Fs)
         h_onset *= ampl_onset
     
     if duration_main > 0:
         omega_main = 2*np.pi*freq_main
-        # Create the transfer function system of the sound
-        b, a = zpk2tf([], [a_main-1j*omega_main, a_main+1j*omega_main], omega_main)
-        system = TransferFunction(b, a)
-        # Time array (from 0 to duration with step size of 1/Fs)
-        t = np.linspace(0, duration_main, int(Fs * duration_main))
-        # Impulse response (time domain)
-        t_main, h_main = impulse(system, T=t)
+        if use_transfer:
+            # Create the transfer function system of the sound
+            b, a = zpk2tf([], [a_main-1j*omega_main, a_main+1j*omega_main], omega_main)
+            system = TransferFunction(b, a)
+            # Time array (from 0 to duration with step size of 1/Fs)
+            t = np.linspace(0, duration_main, int(Fs * duration_main))
+            # Impulse response (time domain)
+            t_main, h_main = impulse(system, T=t)
+        else:
+            t_main, h_main = growing_oscillation(omega_main, a_main, duration_main, Fs)
         h_main *= ampl_main
     
     
@@ -82,7 +93,7 @@ def advanced_model_valve(delay:float, duration_total: float, duration_onset:floa
     
     return t_out, h_out
 
-def advanced_model_single_beat(Fs: int, BPM: int, lf: float, hf: float, order: int, size: int, valves: list[ValveParams]) -> Tuple[np.ndarray, np.ndarray]:
+def advanced_model_single_beat(Fs: int, BPM: int, lf: float, hf: float, order: int, size: int, valves: list[ValveParams], use_transfer: bool = True) -> Tuple[np.ndarray, np.ndarray]:
     """
     @author: Gerrald
     @date: 10-12-2025
@@ -97,14 +108,15 @@ def advanced_model_single_beat(Fs: int, BPM: int, lf: float, hf: float, order: i
         order (int): The order of the bandpass filter.
         size (int): The length of the bandpass filter.
         valves (list[ValveParams]): A list of the valve parameters.
-
+        use_transfer(bool, optional): Whether to use the transfer function or the real function. Defaults to True.
+        
     Returns:
         Tuple[np.ndarray, np.ndarray]: t_model, h_model
     """    
     t_out = []
     h_out = []
     for valve in valves:
-        t, h = advanced_model_valve_params(valve, Fs)
+        t, h = advanced_model_valve_params(valve, Fs, use_transfer=use_transfer)
         t_out.append(t)
         h_out.append(h)
     
@@ -135,7 +147,7 @@ def advanced_model_single_beat(Fs: int, BPM: int, lf: float, hf: float, order: i
     return t_filtered, h_filtered
 
 def advanced_model(Fs: int, BPM: int, lf: float, hf: float, order: int, size: int, valves: list[ValveParams], n: int, 
-                   randomize_enabled: bool = False, r_ratio: float = 0, bpm_ratio: float = 0, noise: float = 0) -> Tuple[np.ndarray, np.ndarray]:
+                   randomize_enabled: bool = False, r_ratio: float = 0, bpm_ratio: float = 0, noise: float = 0, use_transfer: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
     @author: Gerrald
     @date: 10-12-2025
@@ -155,7 +167,8 @@ def advanced_model(Fs: int, BPM: int, lf: float, hf: float, order: int, size: in
         r_ratio (float, optional): How much to randomize each valve parameter. Defaults to 0.
         bpm_ratio (float, optional): How much to randomize the BPM. Defaults to 0.
         noise (float, optional): How much noise there is. Defaults to 0.
-
+        use_transfer(bool, optional): Whether to use the transfer function or the real function. Defaults to True.
+        
     Returns:
         Tuple[np.ndarray, np.ndarray]: t_model, h_model
     """
@@ -179,7 +192,8 @@ def advanced_model(Fs: int, BPM: int, lf: float, hf: float, order: int, size: in
                 hf, 
                 order, 
                 size, 
-                valves)
+                valves,
+                use_transfer=use_transfer)
             h_full[current_h_index:current_h_index+len(h_filtered)] += h_filtered
             current_h_index += this_h_len
         t_full = np.linspace(0, len(h_full)/Fs, len(h_full))
