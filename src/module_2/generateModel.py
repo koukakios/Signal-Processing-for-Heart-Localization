@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 from lib.model.Model import Model
 from lib.config.ConfigParser import ConfigParser
 
-SAVE = False
+SAVE = True
 PLOT = True
 
 # Script that shows the usage of Model to create a model of a single microphone
 config = ConfigParser()
 
-model = Model(config, randomize_enabled=False, simulate_S2=False)
+model = Model(config, randomize_enabled=True, simulate_S2=True)
 model.import_csv(".\\src\\module_2\\model_params.csv")
 model.set_n(config.HeartSoundModel.NBeats)
 if SAVE:
@@ -16,10 +16,8 @@ if SAVE:
     
 if PLOT:
     plt.rcParams.update({'font.size': 20})
-    t_model, h_model = model.generate_model(use_transfer=True)
+    t_model, h_model = model.generate_model()
     plt.plot(t_model, h_model, linewidth=2)
-    t_model_exp, h_model_exp = model.generate_model(use_transfer=False)
-    plt.plot(t_model_exp, h_model_exp, linewidth=2)
     plt.xlabel("Time (s)")
     plt.ylabel("Amplitude (relative)")
     plt.title("Modeled heart beat signal")
