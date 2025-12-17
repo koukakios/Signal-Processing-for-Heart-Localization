@@ -51,5 +51,25 @@ def mvdr_z(Rx, M, xyz_points, v, f0, mic_positions):
 
     return result
 
+def generate_scan_points(radius, zoff):
+    
+    result = np.array([
+    [radius * np.cos(np.deg2rad(angle)),
+     radius * np.sin(np.deg2rad(angle)),
+     zoff]
+    for angle in range(-90, 91)
+    ])
 
+    return result
 
+def test_shit ():
+    return 0
+
+def generate_mic_positions(d, M):
+    mic_positions = np.array([d * step for step in range (M)])
+    middle_point = mic_positions[len(mic_positions) / 2]
+    result = np.array([mic_positions[i] - middle_point for i in range (len(mic_positions))])
+    return result
+
+if __name__ == "__main__":
+    pass
