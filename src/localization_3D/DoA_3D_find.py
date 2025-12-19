@@ -78,16 +78,17 @@ if __name__ == "__main__":
     f0 = central_freq
     d = 0.10
     Rx = (X @ X.conj().T) / X.shape[1]
-    radius = 7
-    zoff = 0.2
+    radius = 7.5
+    zoff = 0
+
+
     xyz_points = generate_scan_points(radius, zoff)
     mic_positions = generate_mic_positions(d, M)
+    
 
     Pout = mvdr_z(Rx, M, xyz_points, v, f0, mic_positions)
-    print(xyz_points)
-    print(Pout.shape)
     
-    point_range = np.arange(len(Pout))
+    point_range = np.arange(-len(Pout)/2, len(Pout)/2)
     plt.plot(point_range, Pout)
 
     

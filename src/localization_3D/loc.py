@@ -47,7 +47,7 @@ def mvdr_z(Rx, M, xyz_points, v, f0, mic_positions):
         to_append = np.matmul(to_append, a)
         result.append(1/to_append)
 
-    result = np.array([1 / result[i] for i in range (len(result)) ])
+    result = np.array(result)
 
     return result
 
@@ -68,7 +68,7 @@ def test_shit ():
 def generate_mic_positions(d, M):
     mic_positions = np.array( [ [d * step , 0, 0] for step in range (M) ])
     middle_point = mic_positions[len(mic_positions) - 1]/2
-    result = np.array([mic_positions[i] - middle_point for i in range (len(mic_positions))])
+    result = np.array([-(mic_positions[i] - middle_point) for i in range (len(mic_positions))])
     return result
 
 if __name__ == "__main__":
