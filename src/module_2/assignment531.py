@@ -3,7 +3,7 @@ from lib.config.ConfigParser import ConfigParser
 from copy import deepcopy
 import matplotlib.pyplot as plt
 from lib.model.generate import *
-from lib.model.Model_3D import Model_3D
+from lib.model.Model_3D_old import Model_3D
 
 # Define what this program should do
 WRITE = False
@@ -27,6 +27,7 @@ def plot(signals, Fs):
 if __name__ == "__main__":
     config = ConfigParser()
     model = Model_3D(config, reduce_n=True, simulate_S1=S1, simulate_S2=S2)
+    model.model.randomize_enabled = True
     model.import_csv(".\\src\\module_2\\model_params.csv")
     signals, Fs = model.generate()
     if PLOT:

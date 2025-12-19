@@ -1,4 +1,6 @@
 from pathlib import Path
+import numpy as np
+from collections import defaultdict
 
 from lib.config.ConfigParser import ConfigParser
 from lib.processing.Processor import Processor
@@ -28,21 +30,68 @@ class Executor:
         self.log_enabled = log
         self.results = {}
         
-    def execute(self):
+    def execute(self, write_enabled: bool = True):
         """
         @author: Gerrald
-        @date: 10-12-2025
+        @date: 17-12-2025
         """
-        processor = Processor(None, self.config, log=self.log_enabled)
         for file in self.files:
             self.log(f"Processing {file.stem}")
+            processor = Processor(None, self.config, log=self.log_enabled)
             processor.open_file(file)
-            try:
-                processor.run()
+            try:    
+                processor.run(write_enabled=False)
                 
-                self.results[file] = [len(processor.s1_peaks), len(processor.s2_peaks), len(processor.uncertain)]
+                self.results[file] = [len(processor.s1_peaks), len(processor.s2_peaks), len(processor.uncertain), processor]
             except Exception as e:
                 self.log(f"{file} failed, Error: {e}")
+                
+        uncertain_zero = [
+            [file, value[0], value[1]]
+            for file, value in self.results.items()
+            if value[2] == 0
+        ]
+        
+        pairs = defaultdict(list)
+        for file, v0, v1 in uncertain_zero:
+            pairs[(v0, v1)].append(file)
+        
+        if len(uncertain_zero) == 0 or len(pairs) > 1:
+            print("ERROR: Non-program-solvable challenge, but UI not implemented yet.")
+            return
+        
+        file_used = next(iter(pairs.values()))[0]
+        p = self.results[file_used][3]
+        self.log(f"Using {file_used}: s1_peaks:{len(p.s1_peaks)}, s2_peaks:{len(p.s2_peaks)}, uncertain:{len(p.uncertain)}")
+        used_peaks_s1 = p.s1_peaks
+        used_peaks_s2 = p.s2_peaks
+        
+        for file, value in self.results.items():
+            processor: Processor = value[3]
+            
+            processor.segment()
+            
+            ind_s1_self = processor.ind_s1
+            ind_s2_self = processor.ind_s2
+            
+            processor.s1_peaks = used_peaks_s1
+            processor.s2_peaks = used_peaks_s2
+            
+            processor.segment()
+            
+            s1_before = set(map(tuple, ind_s1_self))
+            s2_before = set(map(tuple, ind_s2_self))
+            s1_after = set(map(tuple, processor.ind_s1))
+            s2_after = set(map(tuple, processor.ind_s2))
+            
+            processor.attention_segments["s1_added"] = s1_after.difference(s1_before)
+            processor.attention_segments["s2_added"] = s2_after.difference(s2_before)
+            processor.attention_segments["s1_removed"] = s1_before.difference(s1_after)
+            processor.attention_segments["s2_removed"] = s2_before.difference(s2_after)
+            
+            if write_enabled:
+                processor.write()
+            
         self.log("Finished!")
         
     def summarize(self):
