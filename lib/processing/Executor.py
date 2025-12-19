@@ -61,17 +61,34 @@ class Executor:
             return
         
         file_used = next(iter(pairs.values()))[0]
-        self.log(f"Using {file_used}: s1_peaks:{len(processor.s1_peaks)}, s2_peaks:{len(processor.s2_peaks)}, uncertain:{len(processor.uncertain)}")
-        used_peaks_s1 = self.results[file_used][3].s1_peaks
-        used_peaks_s2 = self.results[file_used][3].s2_peaks
+        p = self.results[file_used][3]
+        self.log(f"Using {file_used}: s1_peaks:{len(p.s1_peaks)}, s2_peaks:{len(p.s2_peaks)}, uncertain:{len(p.uncertain)}")
+        used_peaks_s1 = p.s1_peaks
+        used_peaks_s2 = p.s2_peaks
         
         for file, value in self.results.items():
-            processor = value[3]
+            processor: Processor = value[3]
+            
+            processor.segment()
+            
+            ind_s1_self = processor.ind_s1
+            ind_s2_self = processor.ind_s2
             
             processor.s1_peaks = used_peaks_s1
             processor.s2_peaks = used_peaks_s2
             
             processor.segment()
+            
+            s1_before = set(map(tuple, ind_s1_self))
+            s2_before = set(map(tuple, ind_s2_self))
+            s1_after = set(map(tuple, processor.ind_s1))
+            s2_after = set(map(tuple, processor.ind_s2))
+            
+            processor.attention_segments["s1_added"] = s1_after.difference(s1_before)
+            processor.attention_segments["s2_added"] = s2_after.difference(s2_before)
+            processor.attention_segments["s1_removed"] = s1_before.difference(s1_after)
+            processor.attention_segments["s2_removed"] = s2_before.difference(s2_after)
+            
             if write_enabled:
                 processor.write()
             

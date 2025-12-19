@@ -52,4 +52,8 @@ def randomize(val: float, ratio: float) -> float:
     return val * (1 + ratio * random() * np.sign(random() - 0.5))
 
 def white_noise(duration: float, Fs: int):
+    """
+    @author: Gerrald
+    @date: 17-12-2025
+    """
     return np.random.rand(round(duration * Fs)) * np.sign(np.random.rand(round(duration * Fs)) - 0.5)

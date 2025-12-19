@@ -101,6 +101,10 @@ class Processor:
         self.segmented_s2 = None
         self.segmented_s1_raw = None
         self.segmented_s2_raw = None
+        
+        # Just something for visualising changes, put everything in it what you want to grab the attention of the user
+        self.attention_segments = {}
+        
     def run(self, write_enabled: bool = True):
         """
         @author: Gerrald
@@ -137,7 +141,7 @@ class Processor:
             raise RuntimeError("Filepath is None")
         self.log("Reading file...")
         self.Fs_original, self.x = wavfile.read(self.file_path)
-        
+
     def preprocess(self):
         """
         @author: Gerrald

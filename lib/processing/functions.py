@@ -1,6 +1,8 @@
 from scipy import signal
 import numpy as np
 from math import floor
+from joblib import Memory
+memory = Memory("./_cache")
 
 def construct_bandpass_filter(low: float, high: float, Fs: int, order: int = 2, size: int = 2000):
     """
@@ -49,6 +51,7 @@ def construct_lowpass_filter(fc: float, Fs: int, order: int = 2, size: int = 200
     g = signal.filtfilt(b, a, [*np.zeros(resolution), 1, *np.zeros(resolution)])
     return g
 
+@memory.cache
 def apply_filter(x: list|np.ndarray, g: list|np.ndarray):
     """
     @author: Gerrald
