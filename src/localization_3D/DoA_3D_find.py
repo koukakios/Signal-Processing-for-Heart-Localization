@@ -1,13 +1,18 @@
 import numpy as np
-from matched_beamformer import matchedbeamforming
-from MVDR import MVDR
 from scipy.signal import ShortTimeFFT
 from scipy.signal.windows import gaussian
 from scipy.io import wavfile
 from pathlib import Path
 import matplotlib.pyplot as plt
 import soundfile as sf
-#README FOR REPORT. So like 
+from loc import a_z
+from loc import mvdr_z
+from loc import music_z
+from loc import generate_scan_points
+from loc import generate_mic_positions
+
+
+
 
 if __name__ == "__main__":
     fs = 48000
@@ -58,43 +63,33 @@ if __name__ == "__main__":
     Delta_f = f_bins[1] - f_bins[0]
     print( Delta_f)
     bin = 16
+    central_freq = bin*Delta_f
     X = Sx_all[:,bin , :]
-    print(X.shape) 
-    Rx = np.cov(X)
-    
+    print(X.shape)
+    print(central_freq)
+
+
+    #Now we got the X selected
+
+    #define parameters
+    Q = 2
     M = 6
-    d = 0.1
     v = 343
-    f0 = f_bins[bin]
-    theta_range = np.linspace(-90,90,1000)
-    pspec = MVDR(theta_range, M, d, v, f0, Rx)
-    print ("done with MVDR")
-    print (bin * Delta_f)
+    f0 = central_freq
+    d = 0.10
+    Rx = (X @ X.conj().T) / X.shape[1]
+    radius = 7.5
+    zoff = 0
+
+
+    xyz_points = generate_scan_points(radius, zoff)
+    mic_positions = generate_mic_positions(d, M)
     
 
-    plt.figure(figsize=(7, 4))
-    plt.plot(theta_range, pspec, linewidth=2)
+    Pout = mvdr_z(Rx, M, xyz_points, v, f0, mic_positions)
+    
+    point_range = np.arange(-len(Pout)/2, len(Pout)/2)
+    plt.plot(point_range, Pout)
 
-    ymax = np.max(pspec)
-
-    # vertical lines at the two source angles
-    plt.axvline(61.9, linestyle='--', color='red')
-    #plt.axvline(6,  linestyle='--', color='red')
-
-    # labels for the lines, shifted so they don't overlap
-    plt.text(61.9-7, ymax*0.9, "61.9°",
-             ha='right', va='bottom', fontsize=12, color='red')
-    #plt.text(6 + 3,  ymax*0.9, "6°",
-             #ha='left',  va='bottom', fontsize=12, color='red')
-
-    plt.xlabel("Angle (degrees)")
-    plt.ylabel("Beamformer output")
-    plt.title("Beamformer (1 source at 60°) / Bin Frequency = 1687 Hz")
-
-    plt.grid(True, linestyle="--", alpha=0.4)
-    plt.tight_layout()
+    
     plt.show()
-
-
-
-
