@@ -1,0 +1,75 @@
+\chapter{Test results classification}
+
+\begin{table}[ht!]
+\scriptsize
+\centering
+\captionsetup{justification=centering}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Recording} & \textbf{Ch.} & \textbf{S1} & \textbf{S2} & \textbf{Uncertain} &
+\multicolumn{2}{c|}{\textbf{False positive}} &
+\multicolumn{2}{c|}{\textbf{False negative}} &
+\multicolumn{2}{c|}{\textbf{Marked wrong}} \\
+\cline{6-11}
+ &  &  &  &  & S1 & S2 & S1 & S2 & S1 (is S2) & S2 (is S1) \\
+\hline
+Piezo 2 & 1 & 120 & 104 & 20 & 1 & 0 & 8 & 8 & 0 & 0 \\
+Piezo 2 & 2 & 109 & 90 & 21 & 0 & 1 & 10 & 15 & 0 & 0 \\
+Piezo 2 & 3 & 104 & 103 & 2 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Piezo 2 & 4 & 95 & 93 & 12 & 0 & 0 & 4 & 8 & 0 & 0 \\
+Piezo 2 & 5 & 100 & 100 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\rowcolor{red!30}Piezo 2 & 6 & -- & -- & -- & 0 & 0 & 0 & 0 & 0 & 0 \\
+\noalign{\hrule height 0.3pt}
+Piezo 4 & 1 & 108 & 104 & 6 & 0 & 0 & 1 & 2 & 0 & 0 \\
+Piezo 4 & 2 & 106 & 98 & 19 & 0 & 0 & 4 & 4 & 0 & 0 \\
+Piezo 4 & 3 & 102 & 102 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\rowcolor{red!30}Piezo 4 & 4 & -- & -- & -- & 0 & 0 & 0 & 0 & 0 & 0 \\
+Piezo 4 & 5 & 102 & 102 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\rowcolor{red!30}Piezo 4 & 6 & 24 & 19 & 83 & 0 & 0 & 78 & 78 & 0 & 0 \\
+\hline
+\textbf{Total} & & \textbf{946} & \textbf{896} & \textbf{80} &
+\textbf{1} & \textbf{1} &
+\textbf{27} & \textbf{37} &
+\textbf{0} & \textbf{0} \\
+\hline
+\end{tabular}
+\caption{Peak detection evaluation results for the piezo element. Rows colored red contain data the algorithm errored on. On those audio segments, a human eye could only -with great difficulty- detect the peaks and are therefore taken out of the total calculation.}
+\label{tab:test_piezo_segmentation}
+\end{table}
+
+\begin{table}[ht!]
+\scriptsize
+\centering
+\captionsetup{justification=centering}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Recording} & \textbf{Ch.} & \textbf{S1} & \textbf{S2} & \textbf{Uncertain} &
+\multicolumn{2}{c|}{\textbf{False positive}} &
+\multicolumn{2}{c|}{\textbf{False negative}} &
+\multicolumn{2}{c|}{\textbf{Marked wrong}} \\
+\cline{6-11}
+ &  &  &  &  & S1 & S2 & S1 & S2 & S1 (is S2) & S2 (is S1) \\
+\hline
+Stethoscope 2 & 1 & 111 & 110 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 2 & 2 & 110 & 109 & 2 & 0 & 0 & 1 & 2 & 0 & 0 \\
+Stethoscope 2 & 3 & 111 & 110 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 2 & 4 & 111 & 110 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 2 & 5 & 111 & 110 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 2 & 6 & 111 & 110 & 2 & 0 & 0 & 1 & 1 & 0 & 0 \\
+\noalign{\hrule height 0.3pt}
+Stethoscope 5 & 1 & 113 & 112 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 5 & 2 & 114 & 110 & 9 & 0 & 0 & 4 & 3 & 0 & 0 \\
+Stethoscope 5 & 3 & 113 & 112 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 5 & 4 & 113 & 112 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 5 & 5 & 115 & 113 & 2 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Stethoscope 5 & 6 & 113 & 112 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+\textbf{Total} & & \textbf{1346} & \textbf{1330} & \textbf{15} &
+\textbf{0} & \textbf{0} &
+\textbf{6} & \textbf{6} &
+\textbf{0} & \textbf{0} \\
+\hline
+\end{tabular}
+\caption{Peak detection evaluation results for the stethoscope element. }
+\label{tab:test_stethoscope_segmentation}
+\end{table}

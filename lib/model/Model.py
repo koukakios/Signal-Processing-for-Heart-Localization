@@ -18,7 +18,7 @@ class Model:
     
     Wrapper for the original sound to make it easier to plot it.
     """
-    def __init__(self, config: ConfigParser, randomize_enabled: bool = False) -> None:
+    def __init__(self, config: ConfigParser, simulate_S1: bool = True, simulate_S2: bool = True, randomize_enabled: bool = False) -> None:
         """
         @author: Gerrald
         @date: 10-12-2025
@@ -44,12 +44,21 @@ class Model:
         self.n = self.n_init = 10
         self.BPM = self.BPM_init = config.HeartSoundModel.BPM
         self.shift = self.shift_init = -2.28
-        self.valves_init = [
-            ValveParams( 10, 30, 10, 10, 0.05, 0.1,   1,  50,  50, "M"), 
-            ValveParams( 40, 30, 10, 10, 0.05, 0.1, 0.5, 150, 150, "T"), 
-            ValveParams(300, 30, 10, 10, 0.05, 0.1, 0.5,  50,  50, "A"), 
-            ValveParams(330, 30, 10, 10, 0.05, 0.1, 0.4,  30,  30, "P"), 
-        ]
+        self.valves_init = []
+        
+        if simulate_S1: 
+            self.valves_init.extend([
+                ValveParams( 10, 30, 10, 10, 0.05, 0.1,   1,  50,  50, "M"), 
+                ValveParams( 40, 30, 10, 10, 0.05, 0.1, 0.5, 150, 150, "T"), 
+            ])
+        if simulate_S2: 
+            self.valves_init.extend([
+                ValveParams(300, 30, 10, 10, 0.05, 0.1, 0.5,  50,  50, "A"), 
+                ValveParams(330, 30, 10, 10, 0.05, 0.1, 0.4,  30,  30, "P"), 
+            ])
+            
+        self.simulate_S1 = simulate_S1
+        self.simulate_S2 = simulate_S2
         self.valves = deepcopy(self.valves_init)
         
     def reset(self) -> None:
@@ -100,13 +109,16 @@ class Model:
         
         write(wav_path, self.Fs, h_model)
     
-    def generate_model(self) -> Tuple[np.ndarray, np.ndarray]:
+    def generate_model(self, use_transfer: bool = True) -> Tuple[np.ndarray, np.ndarray]:
         """
         @author: Gerrald
         @date: 10-12-2025
 
         Generates the model time and amplitude axis.
-
+        
+        Args:
+            use_transfer(bool, optional): Whether to use the transfer function or the real function. Defaults to True.
+        
         Returns:
             Tuple[np.ndarray, np.ndarray]: t_model (the time axis), h_model (the amplitude axis).
         
@@ -121,7 +133,8 @@ class Model:
             self.valves,
             self.n, 
             randomize_enabled=self.randomize_enabled,
-            noise=0.01
+            noise=0.01,
+            use_transfer=use_transfer
         )
         
         return t_model, h_model
@@ -216,6 +229,10 @@ class Model:
             self.valves = []
             for row in reader:
                 if not row:
+                    continue
+                name = row[0]
+                if (not (self.simulate_S1 and name in ["M", "T"]) and
+                    not (self.simulate_S2 and name in ["A", "P"])):
                     continue
                 self.valves.append(
                     ValveParams(
